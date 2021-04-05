@@ -1,0 +1,53 @@
+﻿{
+    "connectionString": "mongodb://localhost/node-mongo-signup-verification-api",
+    "secret": "F6505213-19EC-4A7D-8C6C-29982505AE4FC2058156-23EF-46C8-94D5-671836AF4909E78EAFBF-9212-4D94-91BD-7449BEA10171A180A8D6-975A-48A7-9AB7-41FD2CB0CABB047C68CF-EAAF-44B0-9A28-4729D576BB5226CEA668-FA38-45FC-9683-742A00F067D0",
+    "emailFrom": "judah@smfc.co.za",
+    "smtpOptions": {
+        "host": "mail.smfc.co.za",
+        "port": 587,
+        "auth": {
+            "user": "judah@smfc.co.za",
+            "pass": "waseekiI42"
+        },
+        "tls": {
+            "rejectUnauthorized": false
+        }
+    },
+    "zoomApiKey": "qqbohrdnQ6muSLmkgaRnmg",
+    "zoomApiSecret": "TPuQJOUj6x0Ae7KW3WU2JXxqo3wpvqZXgSO9",
+    "zoomMeetingCred": {       
+        "topic": "string",
+        "type": 1,
+        "start_time": "string [date-time]",
+        "duration": 120,
+        "schedule_for": "ijisrael42@gmail.com",
+        "timezone": "string",
+        "password": "string",
+        "agenda": "string",
+        "recurrence": {
+            "type": 1,
+            "repeat_interval": 1,
+            "weekly_days": "string",
+            "monthly_day": 1,
+            "monthly_week": 1,
+            "monthly_week_day": 1,
+            "end_times": 1,
+            "end_date_time": "string [date-time]"
+        },
+        "settings": {
+            "host_video": true,
+            "participant_video": true,
+            "cn_meeting": true,
+            "in_meeting": true,
+            "join_before_host": true,
+            "mute_upon_entry": true,
+            "watermark": true,
+            "use_pmi": true,
+            "approval_type": 1,
+            "registration_type": 1,
+            "audio": "string",
+            "auto_recording": "string"
+        }
+        
+    }
+}
