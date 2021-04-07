@@ -19,7 +19,7 @@ const allowedOrigins = [
 ];
   
 // Reflect the origin if it's in the allowed list or not defined (cURL, Postman, etc.)
-const corsOptions = {
+/* const corsOptions = {
     origin: (origin, callback) => {
         if (allowedOrigins.includes(origin) || !origin) {
         callback(null, true);
@@ -27,15 +27,21 @@ const corsOptions = {
         callback(new Error('Origin not allowed by CORS'));
         }
     }
+} */
+var corsOptions = {
+    origin: allowedOrigins,
+    optionsSuccessStatus: 200, // For legacy browser support
+    methods: "GET, PUT, POST, DELETE",
 }
 
+app.use(cors(corsOptions));
 // allow cors requests from any origin and with credentials
 // app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: true }));
-// app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
+// app.options('*', cors(corsOptions));
 
 // api routes
-app.use('/accounts', cors(corsOptions), require('./accounts/accounts.controller'));
+app.use('/accounts', require('./accounts/accounts.controller'));
 app.use('/questions', require('./questions/question.controller'));
 app.use('/bids', require('./bids/bid.controller'));
 app.use('/applications', require('./applications/application.controller'));
