@@ -35,7 +35,7 @@ const corsOptions = {
 app.options('*', cors(corsOptions));
 
 // api routes
-app.use('/accounts', require('./accounts/accounts.controller'));
+app.use('/accounts', cors(corsOptions), require('./accounts/accounts.controller'));
 app.use('/questions', require('./questions/question.controller'));
 app.use('/bids', require('./bids/bid.controller'));
 app.use('/applications', require('./applications/application.controller'));
