@@ -29,7 +29,7 @@ const allowedOrigins = [
     }
 } */
 var corsOptions = {
-    origin: allowedOrigins,
+    origin: 'http://localhost:8080',
     optionsSuccessStatus: 200, // For legacy browser support
     methods: "GET, PUT, POST, DELETE",
 }
