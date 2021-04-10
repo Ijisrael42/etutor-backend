@@ -87,6 +87,6 @@ async function getBid(id) {
 }
 
 function basicDetails(bid) {
-    const { id, title, description, user_id, category, budget, status } = bid;
-    return { id, title, description, user_id, category, budget, status };
+    const { id, question_id, question_title, tuttor_name, tutor_id, price, status, signature } = bid;
+    return { id, question_id, question_title, tuttor_name, tutor_id, price, status, signature };
 }

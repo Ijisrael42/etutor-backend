@@ -5,6 +5,7 @@ const schema = new Schema({
     question_id: { type: Schema.Types.ObjectId, ref: 'Question' },
     tutor_id: { type: Schema.Types.ObjectId, ref: 'Account' },
     tutor_name: { type: String },
+    signature: { type: String },
     question_title: { type: String },
     status: { type: String },
     price: { type: Number },    

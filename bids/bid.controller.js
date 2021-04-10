@@ -15,7 +15,7 @@ router.get('/question/:id', authorize(), getByQuestionId);
 
 router.post('/category', authorize(), getByCategory);
 router.post('/', authorize(), createSchema, create);
-router.put('/:id', authorize(), updateSchema, update);
+router.put('/:id', authorize(), update);
 router.delete('/:id', authorize(), _delete);
 
 module.exports = router;
@@ -104,10 +104,6 @@ function updateSchema(req, res, next) {
 }
 
 function update(req, res, next) {
-    // users can update their own bid and admins can update any bid
-    if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
 
     bidService.update(req.params.id, req.body)
         .then(bid => res.json(bid))
