@@ -15,6 +15,7 @@ module.exports = {
     Bid: require('bids/bid.model'),
     Application: require('applications/application.model'),
     RefreshToken: require('accounts/refresh-token.model'),
+    Token: require('token/token.model'),
     isValidId
 };
 
