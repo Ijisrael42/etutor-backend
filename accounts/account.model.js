@@ -3,13 +3,14 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema({
     email: { type: String, unique: true, required: true },
-    passwordHash: { type: String, required: true },
+    passwordHash: { type: String },
     title: { type: String },
     name: { type: String, required: true },
     tutor_id: { type: Schema.Types.ObjectId, ref: 'Application' },
     firstName: { type: String },
     lastName: { type: String },
     acceptTerms: Boolean,
+    isGoogleAcc: Boolean,
     role: { type: String, required: true },
     verificationToken: String,
     verified: Date,

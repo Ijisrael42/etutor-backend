@@ -5,12 +5,16 @@ const crypto = require("crypto");
 const sendEmail = require('_helpers/send-email');
 const db = require('_helpers/db');
 const Role = require('_helpers/role');
+const { OAuth2Client } = require('google-auth-library')
+const client = new OAuth2Client(config.google_client_Id)
 
 module.exports = {
     authenticate,
     refreshToken,
     revokeToken,
     register,
+    googleSignUp,
+    googleLogin,
     registerTutor,
     verifyEmail,
     forgotPassword,
@@ -31,6 +35,32 @@ async function authenticate({ email, password, ipAddress }) {
     if (!account || !account.isVerified || !bcrypt.compareSync(password, account.passwordHash)) {
         throw 'Email or password is incorrect';
     }
+
+    // authentication successful so generate jwt and refresh tokens
+    const jwtToken = generateJwtToken(account);
+    const refreshToken = generateRefreshToken(account, ipAddress);
+
+    // save refresh token
+    await refreshToken.save();
+
+    // return basic details and tokens
+    return {
+        ...basicDetails(account),
+        jwtToken,
+        refreshToken: refreshToken.token
+    };
+}
+
+async function googleLogin(params, ipAddress) {
+
+    const { token }  = params;
+    const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: process.env.CLIENT_ID
+    });
+    const { email } = ticket.getPayload();    
+
+    const account = await db.Account.findOne({ email });
 
     // authentication successful so generate jwt and refresh tokens
     const jwtToken = generateJwtToken(account);
@@ -126,6 +156,52 @@ async function register(params, origin) {
 
     // send email
     await sendVerificationEmail(account, origin);
+}
+
+async function googleSignUp(params, origin, ipAddress) {
+
+    const { token }  = params;
+    const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: process.env.CLIENT_ID
+    });
+    const { name, email, picture } = ticket.getPayload();    
+    
+    // validate
+    if (await db.Account.findOne({ email: email })) {
+        // send already registered error in email to prevent account enumeration
+        return await sendAlreadyRegisteredEmail(email, origin);
+    }
+
+    // create account object
+    const account = new db.Account({ name: name, email: email });
+
+    // first registered account is an admin
+    const isFirstAccount = (await db.Account.countDocuments({})) === 0;
+
+    account.role = isFirstAccount ? Role.Admin : Role.User;
+
+    account.verified = Date.now();
+    account.verificationToken = undefined;
+    account.acceptTerms = true;
+    account.isGoogleAcc = true;
+
+    // save account
+    await account.save();
+
+    const jwtToken = generateJwtToken(account);
+    const refreshToken = generateRefreshToken(account, ipAddress);
+
+    // save refresh token
+    await refreshToken.save();
+
+    // return basic details and tokens
+    return {
+        ...basicDetails(account),
+        jwtToken,
+        refreshToken: refreshToken.token
+    };
+
 }
 
 async function registerTutor(params, origin) {

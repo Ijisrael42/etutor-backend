@@ -12,6 +12,8 @@ router.post('/refresh-token', refreshToken);
 router.post('/jwt', getJWT);
 router.post('/revoke-token', revokeTokenSchema, revokeToken);
 router.post('/register', registerSchema, register);
+router.post('/google-signup', googleSignUp);
+router.post('/google-login', googleLogin);
 router.post('/register-tutor', registerTutor);
 
 router.post('/verify-email', verifyEmailSchema, verifyEmail);
@@ -111,6 +113,24 @@ function register(req, res, next) {
     accountService.register(req.body, req.get('origin'))
         .then(() => res.json({ message: 'Registration successful, please check your email for verification instructions' }))
         .catch(next);
+}
+
+function googleSignUp(req, res, next) {
+    accountService.googleSignUp(req.body, req.get('origin'), req.ip)
+    .then(({ refreshToken, ...account }) => {
+        setTokenCookie(res, refreshToken);
+        res.json({ refreshToken, ...account });
+    })
+    .catch(next);
+}
+
+function googleLogin(req, res, next) {
+    accountService.googleLogin(req.body, req.ip)
+    .then(({ refreshToken, ...account }) => {
+        setTokenCookie(res, refreshToken);
+        res.json({ refreshToken, ...account });
+    })
+    .catch(next);
 }
 
 function registerTutor(req, res, next) {
