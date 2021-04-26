@@ -5,6 +5,8 @@ const validateRequest = require('_middleware/validate-request');
 const authorize = require('_middleware/authorize')
 const Role = require('_helpers/role');
 const questionService = require('./question.service');
+const multer = require('multer');
+var upload = multer({ dest: 'uploads/' });
 
 // routes
 router.get('/', authorize(Role.Admin), getAll);
@@ -14,6 +16,7 @@ router.get('/list/tutor/:id', authorize(), getByTutorId);
 router.get('/tutor/unbidded/:id', authorize(), getByTutorIdUnbidded);
 router.post('/category', authorize(), getByCategory);
 router.post('/zoom-signature', getZooomSignature);
+router.post('/file-upload', upload.single('file'), fileUpload);
 
 router.post('/', authorize(), createSchema, create);
 router.put('/:id', authorize(), update);
@@ -68,6 +71,13 @@ function getByCategory(req, res, next) {
 function getZooomSignature(req, res, next) {
     questionService.getZooomSignature(req.body)
         .then(signature => res.json(signature))
+        .catch(next);
+}
+
+function fileUpload(req, res, next) {
+
+    questionService.fileUpload(req.file)
+        .then(response => res.json(response))
         .catch(next);
 }
 

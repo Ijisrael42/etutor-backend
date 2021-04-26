@@ -1,5 +1,5 @@
 ﻿{
-    "connectionString": "mongodb://localhost/node-mongo-signup-verification-api",
+    "connectionString": "mongodb+srv://ijudah42:waseekiI42@cluster0.gl6yf.mongodb.net/eTutors?retryWrites=true&w=majority",
     "secret": "F6505213-19EC-4A7D-8C6C-29982505AE4FC2058156-23EF-46C8-94D5-671836AF4909E78EAFBF-9212-4D94-91BD-7449BEA10171A180A8D6-975A-48A7-9AB7-41FD2CB0CABB047C68CF-EAAF-44B0-9A28-4729D576BB5226CEA668-FA38-45FC-9683-742A00F067D0",
     "emailFrom": "judah@smfc.co.za",
     "google_client_Id": "1041627571871-dt71aua3q35n5juk9iqltrgtfov9hg6u.apps.googleusercontent.com",

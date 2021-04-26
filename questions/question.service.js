@@ -5,6 +5,8 @@ const applicationService = require('../applications/application.service');
 const crypto = require("crypto");
 const fetch = require("node-fetch");
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+var rp = require('request-promise');
 
 module.exports = {
     getAll,
@@ -14,6 +16,7 @@ module.exports = {
     getByTutorIdUnbidded,    
     getByCategory,
     getZooomSignature,
+    fileUpload,
     create,
     update,
     delete: _delete,
@@ -79,6 +82,27 @@ async function getZooomSignature(params) {
     signature = Buffer.from(`${zoomApiKey}.${data.id}.${timestamp}.${params.role}.${hash}`).toString('base64');
 
     return { meetingNumber: data.id, signature: signature, apiKey: zoomApiKey };
+}
+
+async function fileUpload(file) {
+
+    var options = { 
+        method: 'POST', uri: 'https://smfc.co.za/samples/file-upload/api/index.php',
+        formData: {
+            file: { value: fs.createReadStream(file.path), options: { filename: file.originalname, contentType: file.mimetype } }
+        },
+        transform: function (body, response) {
+            if (response.headers['content-type'].indexOf('application/json') != -1 ) return JSON.parse(body);
+            else if (response.headers['content-type'].indexOf('text/html') != -1 ) return $.load(body);
+            else return body;
+        }  
+    };
+    
+    var reprp = rp(options)
+    .then(function (body) { return body; })
+    .catch(function (err) { return err; });
+    
+    return reprp;
 }
 
 function generateZoomJWT() {
