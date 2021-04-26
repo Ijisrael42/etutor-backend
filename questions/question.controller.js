@@ -7,6 +7,9 @@ const Role = require('_helpers/role');
 const questionService = require('./question.service');
 const multer = require('multer');
 var upload = multer({ dest: 'uploads/' });
+const fs = require('fs');
+const { promisify } = require('util');
+const unlinkAsync = promisify(fs.unlink);
 
 // routes
 router.get('/', authorize(Role.Admin), getAll);
@@ -74,11 +77,15 @@ function getZooomSignature(req, res, next) {
         .catch(next);
 }
 
-function fileUpload(req, res, next) {
+async function fileUpload(req, res, next) {
 
-    questionService.fileUpload(req.file)
-        .then(response => res.json(response))
+    let response = await questionService.fileUpload(req.file)
+        .then(response => { return response; })
         .catch(next);
+
+    // Delete the file like normal
+    await unlinkAsync(req.file.path)
+    res.json(response);
 }
 
 function createSchema(req, res, next) {
