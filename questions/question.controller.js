@@ -96,7 +96,9 @@ function createSchema(req, res, next) {
         user_id: Joi.required(),
         category: Joi.number().required(),
         status: Joi.string().required(),
-        budget: Joi.number().required(), 
+        budget: Joi.number().required(),
+        image_url: Joi.string(),
+        image_name: Joi.string(),
     });
     validateRequest(req, next, schema);
 }
