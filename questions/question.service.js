@@ -150,6 +150,6 @@ async function getQuestion(id) {
 }
 
 function basicDetails(question) {
-    const { id, title, description, user_id, category, budget, status } = question;
-    return { id, title, description, user_id, category, budget, status };
+    const { id, title, description, user_id, category, budget, status, image_name, image_url } = question;
+    return { id, title, description, user_id, category, budget, status, image_name, image_url };
 }
