@@ -87,7 +87,7 @@ async function getZooomSignature(params) {
 async function fileUpload(file) {
 
     var options = { 
-        method: 'POST', uri: 'https://smfc.co.za/samples/file-upload/api/index.php',
+        method: 'POST', uri: `${config.file_path}/index.php`,
         formData: {
             file: { value: fs.createReadStream(file.path), options: { filename: file.originalname, contentType: file.mimetype } }
         },

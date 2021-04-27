@@ -6,6 +6,8 @@ const schema = new Schema({
     description: { type: String, required: true },
     user_id: { type: Schema.Types.ObjectId, ref: 'Account' },
     tutor_id: { type: Schema.Types.ObjectId, ref: 'Account' },
+    image_name: { type: String },
+    image_url: { type: String },
     category: { type: Number },
     status: { type: String },
     budget: { type: Number },    
