@@ -6,7 +6,10 @@ const crypto = require("crypto");
 const fetch = require("node-fetch");
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
-var rp = require('request-promise');
+const rp = require('request-promise');
+const mime = require('mime-types');
+const path = require('path');
+const docxConverter = require('docx-pdf');
 
 module.exports = {
     getAll,
@@ -17,6 +20,8 @@ module.exports = {
     getByCategory,
     getZooomSignature,
     fileUpload,
+    fileDownload,
+    getFile,
     create,
     update,
     delete: _delete,
@@ -102,6 +107,70 @@ async function fileUpload(file) {
     .then(function (body) { return body; })
     .catch(function (err) { return err; });
     
+    return reprp;
+}
+
+async function fileDownload(params) {
+
+    const mimetype = mime.lookup(params.filename);
+    const options = {
+        uri: `${config.file_path}/uploads/${params.filename}`,
+        method: 'GET',
+        headers: {'Content-type': mimetype}, 
+        encoding: null
+    };
+
+    var reprp = rp(options)
+    .then(function (body) {
+        let new_location = __dirname + '/downloads/' + params.filename;
+        let writeStream = fs.createWriteStream(new_location);
+        writeStream.write(body, 'binary');
+
+        writeStream.end();
+
+        const newfile = params.filename.split('.');
+        if( newfile[1] != "pdf" ) 
+        {
+            new_location = __dirname + '/downloads/' + newfile[0] + ".pdf";
+
+            const enterPath = path.join(__dirname, '/downloads/' + params.filename );
+            const outputPath = path.join(__dirname, '/downloads/' + newfile[0] + ".pdf" );
+
+            docxConverter( enterPath, outputPath, (err, result) => {
+                if (err) console.log(err);
+                else console.log(result); // writes to file for us
+            });
+        }        
+
+        return new_location; 
+    })
+    .catch(function (err) { return err; });
+
+    return reprp;
+}
+
+async function getFile(params) {
+
+    const mimetype = mime.lookup(params.filename);
+    const options = {
+        uri: `${config.file_path}/uploads/${params.name}`,
+        method: 'GET',
+        headers: {'Content-type': mimetype},
+        encoding: null
+    };
+
+    var reprp = rp(options)
+    .then(function (body) {
+        let new_location = __dirname + '/downloads/' + params.name;
+        let writeStream = fs.createWriteStream(new_location);
+        writeStream.write(body, 'binary');
+
+        writeStream.end();
+        
+        return new_location; 
+    })
+    .catch(function (err) { return err; });
+
     return reprp;
 }
 

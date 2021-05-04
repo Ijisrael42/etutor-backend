@@ -10,6 +10,9 @@ var upload = multer({ dest: 'uploads/' });
 const fs = require('fs');
 const { promisify } = require('util');
 const unlinkAsync = promisify(fs.unlink);
+const mime = require('mime-types');
+const docxConverter = require('docx-pdf');
+const path = require('path');
 
 // routes
 router.get('/', authorize(Role.Admin), getAll);
@@ -20,6 +23,8 @@ router.get('/tutor/unbidded/:id', authorize(), getByTutorIdUnbidded);
 router.post('/category', authorize(), getByCategory);
 router.post('/zoom-signature', getZooomSignature);
 router.post('/file-upload', upload.single('file'), fileUpload);
+router.post('/file-download', fileDownload);
+router.get('/file/:name', getFile);
 
 router.post('/', authorize(), createSchema, create);
 router.put('/:id', authorize(), update);
@@ -86,6 +91,78 @@ async function fileUpload(req, res, next) {
     // Delete the file like normal
     await unlinkAsync(req.file.path)
     res.json(response);
+}
+
+async function fileDownload(req, res, next) {
+
+    questionService.fileDownload(req.body)
+    .then(file_path => { 
+
+        const newfile = req.body.filename.split('.');
+        if( newfile[1] != "pdf" )  
+        {
+            file_path = __dirname + '/downloads/' + newfile[0] + ".pdf";
+
+            const enterPath = path.join(__dirname, '/downloads/' + req.body.filename );
+            const outputPath = path.join(__dirname, '/downloads/' + newfile[0] + ".pdf" );
+
+            docxConverter( enterPath, outputPath, (err, result) => {
+                if (err) console.log(err);
+                else {
+                    const stream = fs.createReadStream(file_path);
+                    const mimetype = mime.lookup(file_path); 
+
+                    res.set({
+                        'Content-Disposition': `attachment; filename='${req.body.filename}'`,
+                        'Content-Type': mimetype,
+                    });
+                    stream.pipe(res);
+                    res.send(file_path);
+
+                } // writes to file for us
+            });
+        }        
+        
+    })
+    .catch(next);
+}
+
+async function getFile(req, res, next) {
+
+    questionService.getFile(req.params)
+    .then(file_path => { 
+
+        const newfile = req.params.name.split('.');
+        if( newfile[1] != "pdf" ) 
+        {
+            file_path = __dirname + '/downloads/' + newfile[0] + ".pdf";
+
+            const enterPath = path.join(__dirname, '/downloads/' + req.params.name );
+            const outputPath = path.join(__dirname, '/downloads/' + newfile[0] + ".pdf" );
+
+            docxConverter( enterPath, outputPath, (err, result) => {
+                if (err) console.log(err);
+                else {
+                    streamFile(file_path, res, req.body.filename);
+                } // writes to file for us
+            });
+        } else {
+            streamFile(file_path, res, req.body.filename);
+        }    
+    })
+    .catch(next);
+}
+
+function streamFile( file_path, res, filename )
+{
+    const stream = fs.createReadStream(file_path);
+    const mimetype = mime.lookup(file_path); 
+
+    res.set({
+        'Content-Disposition': `attachment; filename='${filename}'`,
+        'Content-Type': mimetype,
+    });
+    stream.pipe(res);
 }
 
 function createSchema(req, res, next) {
