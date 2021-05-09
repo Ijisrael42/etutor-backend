@@ -21,6 +21,7 @@ module.exports = {
     validateResetToken,
     resetPassword,
     getAll,
+    getTutorDeviceTokens,
     getById,
     getWithTutorId,
     create,
@@ -283,6 +284,34 @@ async function getAll() {
     return accounts.map(x => basicDetails(x));
 }
 
+async function getTutorDeviceTokens() {
+    const accounts = await db.Account.find( {  device_token: { $exists: true } } ); // role: "Tutor",
+    // const tokens = accounts.map( account => { account.device_token } );
+    const tokens = [];
+
+    accounts.forEach(element => {
+        tokens.push(element.device_token);
+    });
+    
+    return tokens;
+    /* 
+    // const accounts = await db.Account.find( {  device_token: { $exists: true } } ); // role: "Tutor", 
+    let account = {};
+    let tokens = [];
+    const tutors = db.Application.find();
+
+    tutors.forEach( (tutor, index) => {
+        if( tutor.category.indexOf( category ) != -1 ) {
+            account = db.Account.findOne({ tutor_id: tutor.id })
+            if( account.device_token ) tokens.push(account.device_token);
+        }
+    });
+
+    return tokens;
+
+    */
+}
+
 async function getById(id) {
     const account = await getAccount(id);
     return basicDetails(account);
@@ -376,8 +405,8 @@ function randomTokenString() {
 }
 
 function basicDetails(account) {
-    const { id, title, name, email, role, created, updated, isVerified, tutor_id } = account;
-    return { id, title, name, email, role, created, updated, isVerified, tutor_id };
+    const { id, title, name, email, role, created, updated, isVerified, tutor_id, device_token } = account;
+    return { id, title, name, email, role, created, updated, isVerified, tutor_id, device_token };
 }
 
 async function sendVerificationEmail(account, origin) {

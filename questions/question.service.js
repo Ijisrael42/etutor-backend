@@ -10,13 +10,21 @@ const rp = require('request-promise');
 const mime = require('mime-types');
 const path = require('path');
 const docxConverter = require('docx-pdf');
+const admin = require("firebase-admin");
+const serviceAccount = require("service-account.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://test-f2acb.firebaseio.com"
+});
 
 module.exports = {
     getAll,
     getById,
     getByUserId,
     getByTutorId,
-    getByTutorIdUnbidded,    
+    getByTutorIdUnbidded,   
+    sendToTutors, 
     getByCategory,
     getZooomSignature,
     fileUpload,
@@ -202,6 +210,73 @@ async function update(id, params) {
     await question.save();
 
     return basicDetails(question);
+}
+
+async function sendToTutors()
+{
+    const msg = 'New question to attend to.';
+    const title = 'Qestion Post';
+    let res = '';
+    const accounts = await db.Account.find( {  device_token: { $exists: true } } ); // role: "Tutor",
+
+    accounts.forEach(account => {
+        res = sendNotifs(msg, title, account.device_token);
+    });
+
+    return res;
+}
+
+function sendNotifs(msg, title, regIdArray) {
+
+    let url = 'https://fcm.googleapis.com/fcm/send';
+    let subscription = {
+        "to" : "e2OKK4XpUtu4lwfUDo10hK:APA91bGBfVnmJyw7pVaeXodD-ZDEZyyCbflFNv640o3fSu7z6dOzKvV6cP3kruPutSXI5bftvASV0oWFwvuWhW2SpU9GziB708h2vhmqVYasYNN9St_1s4nDfirK-I18RKHkKTcOk1uU",
+        "notification": {
+        "title": "FCM Message",
+        "body": "This is a message from FCM"
+        },
+        "webpush": {
+        "headers": {
+            "Urgency": "high"
+        },
+        "notification": {
+                "body": "This is a message from FCM to web",
+                "requireInteraction": "true"
+            }
+        }
+    };
+
+    let data = {
+    credentials: "omit",
+    headers: { 
+        "content-type": "application/json;charset=UTF-8", 
+        "sec-fetch-mode": "cors",
+        "Authorization": "Bearer " + config.fcm_token 
+    },
+    body: JSON.stringify(subscription),
+    method: "POST",
+    mode: "cors"
+    };
+
+    const response = fetch( url, data)
+    .then( response => console.log(response))
+    .catch( error => console.log(error) );
+    
+    return response;
+}
+
+function adminSendNotification(msg, title, regIdArray) {
+
+    const data = { 
+        "data": { "body": msg, "title": title },
+        "tokens": regIdArray
+    };
+
+    const res = admin.messaging().sendMulticast(data)
+    .then((response) => { return response;})
+    .catch((err) => { return err; });
+
+    return res;
 }
 
 async function _delete(id) {

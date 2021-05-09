@@ -9,6 +9,7 @@ const schema = new Schema({
     tutor_id: { type: Schema.Types.ObjectId, ref: 'Application' },
     firstName: { type: String },
     lastName: { type: String },
+    device_token: { type: String },
     acceptTerms: Boolean,
     isGoogleAcc: Boolean,
     role: { type: String, required: true },

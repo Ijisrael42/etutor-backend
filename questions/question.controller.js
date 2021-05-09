@@ -15,6 +15,7 @@ const docxConverter = require('docx-pdf');
 const path = require('path');
 
 // routes
+router.get('/send-notifications', sendToTutors);
 router.get('/', authorize(Role.Admin), getAll);
 router.get('/:id', authorize(), getById);
 router.get('/list/user/:id', authorize(), getByUserId);
@@ -124,6 +125,12 @@ async function fileDownload(req, res, next) {
         }        
         
     })
+    .catch(next);
+}
+
+async function sendToTutors(req, res, next) {
+    questionService.sendToTutors()
+    .then(response => res.json(response))
     .catch(next);
 }
 

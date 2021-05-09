@@ -4,6 +4,7 @@
     "emailFrom": "judah@smfc.co.za",
     "file_path": "https://smfc.co.za/samples/file-upload/api",
     "google_client_Id": "1041627571871-dt71aua3q35n5juk9iqltrgtfov9hg6u.apps.googleusercontent.com",
+    "fcm_token": "AAAAvochTlE:APA91bFAIYRnPG1RAuDo6TcCUyf9Qz-gaFzRpxx1YLDyPiJ0qtH8MwtY6f2nPJv_RksvSR5dtaukmFW8jiucV1LB407CVpGFFPQjvnMFHrjty3TICGo1U92Gz6iv3-t5YXL495YeL1-w",
     "smtpOptions": {
         "host": "mail.smfc.co.za",
         "port": 587,

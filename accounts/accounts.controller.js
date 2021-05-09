@@ -21,6 +21,7 @@ router.post('/forgot-password', forgotPasswordSchema, forgotPassword);
 router.post('/validate-reset-token', validateResetTokenSchema, validateResetToken);
 router.post('/reset-password', resetPasswordSchema, resetPassword);
 router.get('/', authorize(Role.Admin), getAll);
+router.get('/tutor-device-tokens', getTutorDeviceTokens);
 router.get('/:id', authorize(), getById);
 router.get('/tutor/:id', authorize(), getWithTutorId);
 router.post('/', authorize(Role.Admin), createSchema, create);
@@ -211,6 +212,12 @@ function getAll(req, res, next) {
         .catch(next);
 }
 
+function getTutorDeviceTokens(req, res, next) {
+    accountService.getTutorDeviceTokens()
+        .then(accounts => res.json(accounts))
+        .catch(next);
+}
+
 function getById(req, res, next) {
     // users can get their own account and admins can get any account
     if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
@@ -259,7 +266,8 @@ function updateSchema(req, res, next) {
         lastName: Joi.string().empty(''),
         email: Joi.string().email().empty(''),
         password: Joi.string().min(6).empty(''),
-        confirmPassword: Joi.string().valid(Joi.ref('password')).empty('')
+        confirmPassword: Joi.string().valid(Joi.ref('password')).empty(''),
+        device_token: Joi.string().empty('')
     };
 
     // only admins can update role
@@ -273,7 +281,7 @@ function updateSchema(req, res, next) {
 
 function update(req, res, next) {
     // users can update their own account and admins can update any account
-    if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
+    if (req.params.id !== req.user.id ) { // && req.user.role !== Role.Admin
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
