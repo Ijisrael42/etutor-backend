@@ -216,13 +216,18 @@ async function sendToTutors()
 {
     const msg = 'New question to attend to.';
     const title = 'Qestion Post';
-    let res = '';
+    let res = [];
+    let tokens = [];
     const accounts = await db.Account.find( {  device_token: { $exists: true } } ); // role: "Tutor",
 
     accounts.forEach(account => {
-        res = sendNotifs(msg, title, account.device_token);
+        tokens.push(account.device_token);
+        // res = adminSendNotification(msg, title, account.device_token);
+        // res.push(adminSendNotification(msg, title, account.device_token));
+        // res = sendNotifs(msg, title, account.device_token);
     });
 
+    res = adminSendNotifications(msg, title, tokens);
     return res;
 }
 
@@ -230,7 +235,7 @@ function sendNotifs(msg, title, regIdArray) {
 
     let url = 'https://fcm.googleapis.com/fcm/send';
     let subscription = {
-        "to" : "e2OKK4XpUtu4lwfUDo10hK:APA91bGBfVnmJyw7pVaeXodD-ZDEZyyCbflFNv640o3fSu7z6dOzKvV6cP3kruPutSXI5bftvASV0oWFwvuWhW2SpU9GziB708h2vhmqVYasYNN9St_1s4nDfirK-I18RKHkKTcOk1uU",
+        "to" : "evAsiWr29uWwU2_bfSJm67:APA91bEEQQ7-hN4I_Sv9nD9oMx240-yM8wYnfq-e4XgQVDNpNmGfccmiT_fWZTcxqOu6ZxEl7hrlUBfSR9skcvaWdfytwNFesFkll8s7cPzWPuyroRCkzAW5sqK5tEG7fXq72jNS8L_p",
         "notification": {
         "title": "FCM Message",
         "body": "This is a message from FCM"
@@ -268,6 +273,22 @@ function sendNotifs(msg, title, regIdArray) {
 function adminSendNotification(msg, title, regIdArray) {
 
     const data = { 
+        "notification": { "body": msg, "title": title },
+        "data": { "body": msg, "title": title },
+        "token": regIdArray
+    };
+
+    const res = admin.messaging().send(data)
+    .then((response) => { return response;})
+    .catch((err) => { return err; });
+
+    return res;
+}
+
+function adminSendNotifications(msg, title, regIdArray) {
+
+    const data = { 
+        "notification": { "body": msg, "title": title },
         "data": { "body": msg, "title": title },
         "tokens": regIdArray
     };

@@ -12,7 +12,7 @@ const schema = new Schema({
     device_token: { type: String },
     acceptTerms: Boolean,
     isGoogleAcc: Boolean,
-    role: { type: String, required: true },
+    role: { type: String  },//required: true
     verificationToken: String,
     verified: Date,
     resetToken: {
