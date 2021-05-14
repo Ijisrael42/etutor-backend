@@ -195,7 +195,7 @@ function generateZoomJWT() {
 
 async function create(params) {
     const question = new db.Question(params);
-
+    sendToTutors();
     // save question
     await question.save();
     return basicDetails(question);
@@ -231,44 +231,6 @@ async function sendToTutors()
     return res;
 }
 
-function sendNotifs(msg, title, regIdArray) {
-
-    let url = 'https://fcm.googleapis.com/fcm/send';
-    let subscription = {
-        "to" : "evAsiWr29uWwU2_bfSJm67:APA91bEEQQ7-hN4I_Sv9nD9oMx240-yM8wYnfq-e4XgQVDNpNmGfccmiT_fWZTcxqOu6ZxEl7hrlUBfSR9skcvaWdfytwNFesFkll8s7cPzWPuyroRCkzAW5sqK5tEG7fXq72jNS8L_p",
-        "notification": {
-        "title": "FCM Message",
-        "body": "This is a message from FCM"
-        },
-        "webpush": {
-        "headers": {
-            "Urgency": "high"
-        },
-        "notification": {
-                "body": "This is a message from FCM to web",
-                "requireInteraction": "true"
-            }
-        }
-    };
-
-    let data = {
-    credentials: "omit",
-    headers: { 
-        "content-type": "application/json;charset=UTF-8", 
-        "sec-fetch-mode": "cors",
-        "Authorization": "Bearer " + config.fcm_token 
-    },
-    body: JSON.stringify(subscription),
-    method: "POST",
-    mode: "cors"
-    };
-
-    const response = fetch( url, data)
-    .then( response => console.log(response))
-    .catch( error => console.log(error) );
-    
-    return response;
-}
 
 function adminSendNotification(msg, title, regIdArray) {
 

@@ -24,9 +24,6 @@ function getAll(req, res, next) {
 
 function getById(req, res, next) {
     // users can get their own service and admins can get any service
-    if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
 
     servicesService.getById(req.params.id)
         .then(service => service ? res.json(service) : res.sendStatus(404))
@@ -76,9 +73,6 @@ function updateSchema(req, res, next) {
 
 function update(req, res, next) {
     // users can update their own service and admins can update any service
-    if (req.params.id !== req.user.id ) { // && req.user.role !== Role.Admin
-        return res.status(401).json({ message: 'Unauthorized' });
-    }
 
     servicesService.update(req.params.id, req.body)
         .then(service => res.json(service))
