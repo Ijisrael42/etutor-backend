@@ -221,18 +221,15 @@ async function sendToTutors()
     const accounts = await db.Account.find( {  device_token: { $exists: true } } ); // role: "Tutor",
 
     accounts.forEach(account => {
-        tokens.push(account.device_token);
-        // res = adminSendNotification(msg, title, account.device_token);
-        // res.push(adminSendNotification(msg, title, account.device_token));
-        // res = sendNotifs(msg, title, account.device_token);
+        if( account.device_token != '' ) 
+            res = adminSendNotification(msg, title, account.device_token, account.id);
     });
 
-    res = adminSendNotifications(msg, title, tokens);
     return res;
 }
 
 
-function adminSendNotification(msg, title, regIdArray) {
+async function adminSendNotification(msg, title, regIdArray, accountId) {
 
     const data = { 
         "notification": { "body": msg, "title": title },
@@ -241,8 +238,11 @@ function adminSendNotification(msg, title, regIdArray) {
     };
 
     const res = admin.messaging().send(data)
-    .then((response) => { return response;})
-    .catch((err) => { return err; });
+    .then((response) => {  return response; })
+    .catch((err) => {
+        accountService.update(accountId, { device_token: "" });
+        return err; 
+    });
 
     return res;
 }
