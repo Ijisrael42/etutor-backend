@@ -20,6 +20,7 @@ app.use('/bids', require('./bids/bid.controller'));
 app.use('/token', require('./token/token.controller'));
 app.use('/applications', require('./applications/application.controller'));
 app.use('/services', require('./services/service.controller'));
+app.use('/files', require('./files/file.controller'));
 // swagger docs route
 app.use('/api-docs', require('_helpers/swagger'));
 
