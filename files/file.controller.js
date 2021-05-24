@@ -122,8 +122,9 @@ function getAll(req, res, next) {
 }
 
 function fileUpload(req, res) {
+    res.json({message : "success"})
     // res.json({file : req.file})
-    res.redirect("/");
+    // res.redirect("/");
 }
 
 
