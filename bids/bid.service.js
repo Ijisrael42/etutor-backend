@@ -1,7 +1,7 @@
 ﻿const config = require('config.json');
 const db = require('_helpers/db');
 const fetch = require("node-fetch");
-const sendNotification = require('_helpers/send-email');
+const sendNotification = require('_helpers/send-notification');
 
 module.exports = {
     getAll,
