@@ -10,14 +10,16 @@ const rp = require('request-promise');
 const mime = require('mime-types');
 const path = require('path');
 const docxConverter = require('docx-pdf');
-const admin = require("firebase-admin");
+const sendNotification = require('_helpers/send-notification');
+
+/* const admin = require("firebase-admin");
 const serviceAccount = require("service-account.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://test-f2acb.firebaseio.com"
 });
-
+ */
 module.exports = {
     getAll,
     getById,
@@ -222,13 +224,13 @@ async function sendToTutors()
 
     accounts.forEach(account => {
         if( account.device_token != '' ) 
-            res = adminSendNotification(msg, title, account.device_token, account.id);
+            res = sendNotification(msg, title, account.device_token, account.id);
     });
 
     return res;
 }
 
-
+/* 
 async function adminSendNotification(msg, title, regIdArray, accountId) {
 
     const data = { 
@@ -246,7 +248,7 @@ async function adminSendNotification(msg, title, regIdArray, accountId) {
 
     return res;
 }
-
+ */
 function adminSendNotifications(msg, title, regIdArray) {
 
     const data = { 
