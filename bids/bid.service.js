@@ -1,10 +1,7 @@
 ﻿const config = require('config.json');
 const db = require('_helpers/db');
-const accountService = require('../accounts/account.service');
-const applicationService = require('../applications/application.service');
-const crypto = require("crypto");
 const fetch = require("node-fetch");
-const jwt = require('jsonwebtoken');
+const sendNotification = require('_helpers/send-email');
 
 module.exports = {
     getAll,
@@ -58,7 +55,24 @@ async function create(params) {
 
     // save bid
     await bid.save();
+
+    sendBid(params.question_id);
     return basicDetails(bid); 
+}
+
+async function sendBid(question_id)
+{
+    const msg = 'New question to attend to.';
+    const title = 'Qestion Post';
+    let res = [];
+    let tokens = [];
+    const question = await db.Question.findById(question_id);
+    const account = await db.Account.findById(question.user_id);
+
+    if( account.device_token != '' ) 
+        res = await sendNotification(msg, title, account.device_token, account.id);
+
+    return res;
 }
 
 async function update(id, params) {
