@@ -56,11 +56,11 @@ async function create(params) {
     // save bid
     await bid.save();
 
-    sendBid(params.question_id);
+    createNotification(params.question_id);
     return basicDetails(bid); 
 }
 
-async function sendBid(question_id)
+async function createNotification(question_id)
 {
     const msg = 'New question to attend to.';
     const title = 'Qestion Post';
@@ -75,6 +75,20 @@ async function sendBid(question_id)
     return res;
 }
 
+async function updateNotification(tutor_id)
+{
+    const msg = 'New question to attend to.';
+    const title = 'Qestion Post';
+    let res = [];
+    let tokens = [];
+    const account = await db.Account.findOne({tutor_id: tutor_id});
+
+    if( account.device_token != '' ) 
+        res = await sendNotification(msg, title, account.device_token, account.id);
+
+    return res;
+}
+
 async function update(id, params) {
     const bid = await getBid(id);
 
@@ -82,6 +96,7 @@ async function update(id, params) {
     Object.assign(bid, params);
     bid.updated = Date.now();
     await bid.save();
+    updateNotification(bid.tutor_id);
 
     return basicDetails(bid);
 }

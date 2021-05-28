@@ -17,6 +17,8 @@ module.exports = {
     RefreshToken: require('accounts/refresh-token.model'),
     Service: require('services/service.model'),
     Token: require('token/token.model'),
+    Supplier: require('suppliers/supplier.model'),
+    Product: require('products/product.model'),
     isValidId
 };
 
