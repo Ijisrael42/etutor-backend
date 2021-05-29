@@ -9,6 +9,7 @@ const productService = require('./product.service');
 // routes
 router.get('/', getAll);//, authorize(Role.Admin)
 router.get('/:id' , getById);
+router.get('/supplier/:id' , getBySupplierId);
 router.post('/', authorize(), createSchema, create);
 router.put('/:id',  update);
 router.delete('/:id',  _delete);
@@ -28,6 +29,13 @@ function getById(req, res, next) {
     }
 
  */    productService.getById(req.params.id)
+        .then(product => product ? res.json(product) : res.sendStatus(404))
+        .catch(next);
+}
+
+function getBySupplierId(req, res, next) {
+
+    productService.getBySupplierId(req.params.id)
         .then(product => product ? res.json(product) : res.sendStatus(404))
         .catch(next);
 }

@@ -9,6 +9,7 @@ const supplierService = require('./supplier.service');
 // routes
 router.get('/', getAll);//, authorize(Role.Admin)
 router.get('/:id' , getById);
+router.get('/supplier/:id' , getBySupplierId);
 router.post('/', authorize(), createSchema, create);
 router.put('/:id', authorize(), update);
 router.delete('/:id', authorize(), _delete);
@@ -17,18 +18,25 @@ module.exports = router;
 
 function getAll(req, res, next) {
     supplierService.getAll()
-        .then(applications => res.json(applications))
+        .then(suppliers => res.json(suppliers))
         .catch(next);
 }
 
 function getById(req, res, next) {
-    // users can get their own application and admins can get any application
+    // users can get their own supplier and admins can get any supplier
 /*     if (req.params.user_id !== req.user.id ) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
  */    supplierService.getById(req.params.id)
-        .then(application => application ? res.json(application) : res.sendStatus(404))
+        .then(supplier => supplier ? res.json(supplier) : res.sendStatus(404))
+        .catch(next);
+}
+
+function getBySupplierId(req, res, next) {
+ 
+    supplierService.getBySupplierId(req.params.id)
+        .then(supplier => supplier ? res.json(supplier) : res.sendStatus(404))
         .catch(next);
 }
 
@@ -50,7 +58,7 @@ function createSchema(req, res, next) {
 
 function create(req, res, next) {
     supplierService.create(req.body)
-        .then(application => res.json(application))
+        .then(supplier => res.json(supplier))
         .catch(next);
 }
 
@@ -74,18 +82,18 @@ function create(req, res, next) {
 } */
 
 function update(req, res, next) {
-    // users can update their own application and admins can update any application
+    // users can update their own supplier and admins can update any supplier
 /*     if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
  */
     supplierService.update(req.params.id, req.body)
-        .then(application => res.json(application))
+        .then(supplier => res.json(supplier))
         .catch(next);
 }
 
 function _delete(req, res, next) {
-    // users can delete their own application and admins can delete any application
+    // users can delete their own supplier and admins can delete any supplier
     if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
         return res.status(401).json({ message: 'Unauthorized' });
     }

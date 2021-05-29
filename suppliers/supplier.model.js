@@ -10,7 +10,7 @@ const schema = new Schema({
     // category: { type: Array, required: true },
     status: { type: String },
     address: { type: String },
-    experience: { type: Number, required: true },
+    experience: { type: String, required: true },
     created: { type: Date, default: Date.now },
     updated: Date
 });

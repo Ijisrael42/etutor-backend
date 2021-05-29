@@ -6,6 +6,7 @@ module.exports = {
     getAll,
     getById,
     getByUserId,
+    getBySupplierId,
     create,
     update,
     delete: _delete
@@ -13,6 +14,11 @@ module.exports = {
 
 async function getAll() {
     const products = await db.Product.find();
+    return products.map(x => basicDetails(x));
+}
+
+async function getBySupplierId(id) {
+    const products = await db.Product.find({ supplier: id});
     return products.map(x => basicDetails(x));
 }
 
