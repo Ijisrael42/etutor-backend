@@ -19,6 +19,8 @@ module.exports = {
     Token: require('token/token.model'),
     Supplier: require('suppliers/supplier.model'),
     Product: require('products/product.model'),
+    Request: require('requests/request.model'),
+    RequestItem: require('requests/request_item.model'),
     isValidId
 };
 

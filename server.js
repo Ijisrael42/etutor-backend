@@ -23,6 +23,7 @@ app.use('/services', require('./services/service.controller'));
 app.use('/suppliers', require('./suppliers/supplier.controller'));
 app.use('/products', require('./products/product.controller'));
 app.use('/files', require('./files/file.controller'));
+app.use('/requests', require('./requests/requests.controller'));
 // swagger docs route
 app.use('/api-docs', require('_helpers/swagger'));
 

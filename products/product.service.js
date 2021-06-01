@@ -11,7 +11,7 @@ module.exports = {
     update,
     delete: _delete
 };
-
+        
 async function getAll() {
     const products = await db.Product.find();
     return products.map(x => basicDetails(x));
