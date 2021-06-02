@@ -9,13 +9,19 @@ module.exports = {
 };
 
 async function getAll() {
-    const requests = await db.Request.find();
+    const requests = await db.Request.find();// db.Request.find({ user_id: user_id});
     return requests.map(x => basicDetails(x));
+}
+
+async function getItems(id) {
+    const requests = await db.RequestItem.find({ request_id: id});
+    return requests.map(x => basicItemDetails(x));
 }
 
 async function getById(id) {
     const request = await getRequest(id);
-    return basicDetails(request);
+    const items = await getItems(id);
+    return { ...basicDetails(request), products: items};
 }
 
 async function create(params) {
@@ -60,6 +66,11 @@ async function getRequest(id) {
 }
 
 function basicDetails(request) {
-    const { id, name } = request;
-    return { id, name };
+    const { id, supplier_name, supplier_id, user_id } = request;
+    return { id, supplier_name, supplier_id, user_id };
+}
+
+function basicItemDetails(request) {
+    const { id, price, product_id, product_name, quantity } = request;
+    return { id, price, product_id, product_name, quantity };
 }
