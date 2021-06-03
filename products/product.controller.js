@@ -10,6 +10,7 @@ const productService = require('./product.service');
 router.get('/', getAll);//, authorize(Role.Admin)
 router.get('/:id' , getById);
 router.get('/supplier/:id' , getBySupplierId);
+router.get('/supplier/active/:id' , getAllActiveSupplierId);
 router.post('/', authorize(), createSchema, create);
 router.put('/:id',  update);
 router.delete('/:id',  _delete);
@@ -19,6 +20,12 @@ module.exports = router;
 function getAll(req, res, next) {
     productService.getAll()
         .then(products => res.json(products))
+        .catch(next);
+}
+
+function getAllActiveSupplierId(req, res, next) {
+    productService.getAllActiveSupplierId(req.params.id)
+        .then(services => res.json(services))
         .catch(next);
 }
 

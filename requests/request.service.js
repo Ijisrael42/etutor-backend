@@ -2,6 +2,7 @@
 
 module.exports = {
     getAll,
+    getByUserId,
     getById,
     create,
     update,
@@ -10,6 +11,11 @@ module.exports = {
 
 async function getAll() {
     const requests = await db.Request.find();// db.Request.find({ user_id: user_id});
+    return requests.map(x => basicDetails(x));
+}
+
+async function getByUserId(id) {
+    const requests = await db.Request.find({ user_id: id});
     return requests.map(x => basicDetails(x));
 }
 
@@ -66,8 +72,8 @@ async function getRequest(id) {
 }
 
 function basicDetails(request) {
-    const { id, supplier_name, supplier_id, user_id } = request;
-    return { id, supplier_name, supplier_id, user_id };
+    const { id, supplier_name, supplier_id, user_id, status } = request;
+    return { id, supplier_name, supplier_id, user_id, status };
 }
 
 function basicItemDetails(request) {

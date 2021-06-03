@@ -9,6 +9,7 @@ const servicesService = require('./service.service');
 // routes
 
 router.get('/', getAll);
+router.get('/active', getAllActive);
 router.get('/:id', getById);
 router.post('/', create);
 router.put('/:id', update);
@@ -18,6 +19,12 @@ module.exports = router;
 
 function getAll(req, res, next) {
     servicesService.getAll()
+        .then(services => res.json(services))
+        .catch(next);
+}
+
+function getAllActive(req, res, next) {
+    servicesService.getAllActive()
         .then(services => res.json(services))
         .catch(next);
 }
@@ -81,10 +88,10 @@ function update(req, res, next) {
 
 function _delete(req, res, next) {
     // users can delete their own service and admins can delete any service
-    if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
+/*     if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
-
+ */
     servicesService.delete(req.params.id)
         .then(() => res.json({ message: 'Account deleted successfully' }))
         .catch(next);

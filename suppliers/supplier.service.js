@@ -4,6 +4,7 @@ const sendEmail = require('_helpers/send-email');
 
 module.exports = {
     getAll,
+    getAllActive,
     getById,
     getByUserId,
     getBySupplierId,
@@ -14,6 +15,11 @@ module.exports = {
 
 async function getAll() {
     const suppliers = await db.Supplier.find();
+    return suppliers.map(x => basicDetails(x));
+}
+
+async function getAllActive() {
+    const suppliers = await db.Supplier.find({ status: "Enabled"});
     return suppliers.map(x => basicDetails(x));
 }
 

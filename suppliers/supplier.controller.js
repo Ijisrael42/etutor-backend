@@ -8,6 +8,7 @@ const supplierService = require('./supplier.service');
 
 // routes
 router.get('/', getAll);//, authorize(Role.Admin)
+router.get('/active', getAllActive);
 router.get('/:id' , getById);
 router.get('/supplier/:id' , getBySupplierId);
 router.post('/', authorize(), createSchema, create);
@@ -18,6 +19,12 @@ module.exports = router;
 
 function getAll(req, res, next) {
     supplierService.getAll()
+        .then(suppliers => res.json(suppliers))
+        .catch(next);
+}
+
+function getAllActive(req, res, next) {
+    supplierService.getAllActive()
         .then(suppliers => res.json(suppliers))
         .catch(next);
 }

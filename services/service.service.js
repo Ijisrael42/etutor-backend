@@ -2,6 +2,7 @@
 
 module.exports = {
     getAll,
+    getAllActive,
     getById,
     create,
     update,
@@ -9,51 +10,56 @@ module.exports = {
 };
 
 async function getAll() {
-    const accounts = await db.Service.find();
-    return accounts.map(x => basicDetails(x));
+    const services = await db.Service.find();
+    return services.map(x => basicDetails(x));
+}
+
+async function getAllActive() {
+    const services = await db.Service.find({ status: "Enabled"});
+    return services.map(x => basicDetails(x));
 }
 
 async function getById(id) {
-    const account = await getService(id);
-    return basicDetails(account);
+    const service = await getService(id);
+    return basicDetails(service);
 }
 
 async function create(params) {
 
-    const account = new db.Service(params);
-    account.verified = Date.now();
+    const service = new db.Service(params);
+    service.verified = Date.now();
 
-    await account.save();
+    await service.save();
 
-    return basicDetails(account);
+    return basicDetails(service);
 }
 
 async function update(id, params) {
-    const account = await getService(id);
+    const service = await getService(id);
 
-    // copy params to account and save
-    Object.assign(account, params);
-    account.updated = Date.now();
-    await account.save();
+    // copy params to service and save
+    Object.assign(service, params);
+    service.updated = Date.now();
+    await service.save();
 
-    return basicDetails(account);
+    return basicDetails(service);
 }
 
 async function _delete(id) {
-    const account = await getService(id);
-    await account.remove();
+    const service = await getService(id);
+    await service.remove();
 }
 
 // helper functions
 
 async function getService(id) {
     if (!db.isValidId(id)) throw 'Service not found';
-    const account = await db.Service.findById(id);
-    if (!account) throw 'Service not found';
-    return account;
+    const service = await db.Service.findById(id);
+    if (!service) throw 'Service not found';
+    return service;
 }
 
-function basicDetails(account) {
-    const { id, name } = account;
-    return { id, name };
+function basicDetails(service) {
+    const { id, name, status } = service;
+    return { id, name, status };
 }

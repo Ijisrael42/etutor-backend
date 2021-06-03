@@ -10,6 +10,7 @@ const requestsService = require('./request.service');
 
 router.get('/', getAll);
 router.get('/:id', getById);
+router.get('/user/:id', getByUserId);
 router.post('/', create);
 router.put('/:id', update);
 router.delete('/:id', _delete);
@@ -26,6 +27,14 @@ function getById(req, res, next) {
     // users can get their own request and admins can get any request
 
     requestsService.getById(req.params.id)
+        .then(request => request ? res.json(request) : res.sendStatus(404))
+        .catch(next);
+}
+
+function getByUserId(req, res, next) {
+    // users can get their own request and admins can get any request
+
+    requestsService.getByUserId(req.params.id)
         .then(request => request ? res.json(request) : res.sendStatus(404))
         .catch(next);
 }

@@ -20,7 +20,7 @@ router.post('/verify-email', verifyEmailSchema, verifyEmail);
 router.post('/forgot-password', forgotPasswordSchema, forgotPassword);
 router.post('/validate-reset-token', validateResetTokenSchema, validateResetToken);
 router.post('/reset-password', resetPasswordSchema, resetPassword);
-router.get('/', authorize(Role.Admin), getAll);
+router.get('/', /* authorize(Role.Admin), */ getAll);
 router.get('/tutor-device-tokens', getTutorDeviceTokens);
 router.get('/:id', authorize(), getById);
 router.get('/tutor/:id', authorize(), getWithTutorId);
