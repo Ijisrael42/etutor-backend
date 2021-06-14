@@ -2,6 +2,7 @@
 const db = require('_helpers/db');
 const accountService = require('../accounts/account.service');
 const applicationService = require('../applications/application.service');
+const bidService = require('../bids/bid.service');
 const crypto = require("crypto");
 const fetch = require("node-fetch");
 const jwt = require('jsonwebtoken');
@@ -24,6 +25,7 @@ module.exports = {
     getAll,
     getById,
     getByUserId,
+    getBiddedByUserId,
     getByTutorId,
     getByTutorIdUnbidded,   
     sendToTutors, 
@@ -52,12 +54,31 @@ async function getByUserId(user_id) {
     return questions; //basicDetails(question);
 }
 
-async function getByTutorId(id) {
+async function getBiddedByUserId(user_id) {
+    const questions = await db.Question.find({ user_id: user_id });
+    let bid = {};
+    let newQuestions = [];
+
+    questions.forEach(async (question) => {
+        bid = await db.Bid.find({ question_id: question.id });
+        if( bid ) newQuestions.push(question);
+    })
+    return newQuestions; //basicDetails(question);
+}
+
+async function getByTutorId(tutor_id) {
+    const questions = await db.Question.find({ tutor_id: tutor_id });
+    return questions.map(x => basicDetails(x));
+}
+
+/* async function getByTutorId(id) {
     const { tutor_id } = accountService.getWithTutorId(id);
     const app = applicationService.getById(tutor_id);
     // const questions = await db.Question.find( { category: { $in: category } } );
     return app; //basicDetails(question);
 }
+
+ */
 
 async function getByTutorIdUnbidded(id) {
     const bids = await db.Bid.find({ tutor_id: id });
@@ -206,12 +227,41 @@ async function create(params) {
 async function update(id, params) {
     const question = await getQuestion(id);
 
+    if( params.status === "Paid" ) sendPaidNotification(params.tutor_id);
+    else if( params.status === "Complete" ) sendCompleteNotification(question.user_id);
+
     // copy params to question and save
     Object.assign(question, params);
     question.updated = Date.now();
     await question.save();
 
     return basicDetails(question);
+}
+
+async function sendPaidNotification(tutor_id)
+{
+    const msg = 'Your bid has been Selected and Approved. Please start the session at the stipulated time';
+    const title = 'Approved Question Bid';
+    const account = await db.Account.find( {  tutor_id: tutor_id } ); // role: "Tutor",
+
+    if( account.device_token != '' ) 
+        res = sendNotification(msg, title, account.device_token, account.id);
+    else {} // Send an email notifying the Tutor about the notification.
+
+    return res;
+}
+
+async function sendCompleteNotification(user_id)
+{
+    const msg = 'Please rate your session and tell us more about it';
+    const title = 'Session Rating';
+    const account = await db.Account.findById(user_id);
+
+    if( account.device_token != '' ) 
+        res = sendNotification(msg, title, account.device_token, account.id);
+    else {} // Send an email notifying the Tutor about the notification.
+    
+    return res;
 }
 
 async function sendToTutors()
@@ -279,6 +329,6 @@ async function getQuestion(id) {
 }
 
 function basicDetails(question) {
-    const { id, title, description, user_id, category, budget, status, image_name, image_url } = question;
-    return { id, title, description, user_id, category, budget, status, image_name, image_url };
+    const { id, title, description, user_id, tutor_id, date_time, no_of_hours, bid_id, category, budget, status, image_name, image_url } = question;
+    return { id, title, description, user_id, tutor_id, date_time, no_of_hours, bid_id, category, budget, status, image_name, image_url };
 }

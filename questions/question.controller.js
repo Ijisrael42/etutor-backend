@@ -19,6 +19,7 @@ router.get('/send-notifications', sendToTutors);
 router.get('/', authorize(Role.Admin), getAll);
 router.get('/:id', authorize(), getById);
 router.get('/list/user/:id', authorize(), getByUserId);
+router.get('/list/bidded/:id', getBiddedByUserId);
 router.get('/list/tutor/:id', authorize(), getByTutorId);
 router.get('/tutor/unbidded/:id', authorize(), getByTutorIdUnbidded);
 router.post('/category', authorize(), getByCategory);
@@ -53,6 +54,13 @@ function getById(req, res, next) {
 function getByUserId(req, res, next) {
 
     questionService.getByUserId(req.params.id)
+        .then(question => question ? res.json(question) : res.sendStatus(404))
+        .catch(next);
+}
+
+function getBiddedByUserId(req, res, next) {
+
+    questionService.getBiddedByUserId(req.params.id)
         .then(question => question ? res.json(question) : res.sendStatus(404))
         .catch(next);
 }
@@ -181,6 +189,8 @@ function createSchema(req, res, next) {
         category: Joi.number().required(),
         status: Joi.string().required(),
         budget: Joi.number().required(),
+        date_time: Joi.string().required(),
+        no_of_hours: Joi.number().required(),
         image_url: Joi.string(),
         image_name: Joi.string(),
     });
