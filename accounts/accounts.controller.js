@@ -25,7 +25,7 @@ router.get('/tutor-device-tokens', getTutorDeviceTokens);
 router.get('/:id', authorize(), getById);
 router.get('/tutor/:id', authorize(), getWithTutorId);
 router.post('/', authorize(Role.Admin), createSchema, create);
-router.put('/:id', authorize(), updateSchema, update);
+router.put('/:id', authorize(), update);
 router.delete('/:id', authorize(), _delete);
 
 module.exports = router;
@@ -263,6 +263,7 @@ function updateSchema(req, res, next) {
     const schemaRules = {
         title: Joi.string().empty(''),
         firstName: Joi.string().empty(''),
+        name: Joi.string().empty(''),
         lastName: Joi.string().empty(''),
         email: Joi.string().email().empty(''),
         password: Joi.string().min(6).empty(''),
