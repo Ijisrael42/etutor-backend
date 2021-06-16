@@ -286,7 +286,7 @@ function update(req, res, next) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    accountService.update(req.params.id, req.body)
+    accountService.update(req.params.id, req.body, req.ip)
     .then(({ refreshToken, ...account }) => {
         setTokenCookie(res, refreshToken);
         res.json({ refreshToken, ...account });

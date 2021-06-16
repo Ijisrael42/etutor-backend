@@ -341,7 +341,7 @@ async function create(params) {
     return basicDetails(account);
 }
 
-async function update(id, params) {
+async function update(id, params, ipAddress) {
     const account = await getAccount(id);
 
     // validate (if email was changed)
