@@ -130,7 +130,8 @@ async function getJWT({ email, ipAddress }) {
         ...basicDetails(account),
         jwtToken,
         refreshToken: refreshToken.token
-    };}
+    };
+}
 
 async function register(params, origin) {
     // validate
@@ -358,7 +359,18 @@ async function update(id, params) {
     account.updated = Date.now();
     await account.save();
 
-    return basicDetails(account);
+    const jwtToken = generateJwtToken(account);
+    const refreshToken = generateRefreshToken(account, ipAddress);
+
+    // save refresh token
+    await refreshToken.save();
+
+    // return basic details and tokens
+    return {
+        ...basicDetails(account),
+        jwtToken,
+        refreshToken: refreshToken.token
+    };
 }
 
 async function _delete(id) {

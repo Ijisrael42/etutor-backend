@@ -53,11 +53,11 @@ function getJWT(req, res, next) {
     const { email } = req.body;
     const ipAddress = req.ip;
     accountService.getJWT({ email, ipAddress })
-        .then(({ refreshToken, ...account }) => {
-            setTokenCookie(res, refreshToken);
-            res.json({ refreshToken, ...account });
-        })
-        .catch(next);
+    .then(({ refreshToken, ...account }) => {
+        setTokenCookie(res, refreshToken);
+        res.json({ refreshToken, ...account });
+    })
+    .catch(next);
 }
 
 function refreshToken(req, res, next) {
@@ -287,8 +287,11 @@ function update(req, res, next) {
     }
 
     accountService.update(req.params.id, req.body)
-        .then(account => res.json(account))
-        .catch(next);
+    .then(({ refreshToken, ...account }) => {
+        setTokenCookie(res, refreshToken);
+        res.json({ refreshToken, ...account });
+    })
+    .catch(next);
 }
 
 function _delete(req, res, next) {
