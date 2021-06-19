@@ -1,6 +1,7 @@
 ﻿const config = require('config.json');
 const db = require('_helpers/db');
 const sendEmail = require('_helpers/send-email');
+const accountService = require('../accounts/account.service');
 
 module.exports = {
     getAll,
@@ -34,16 +35,23 @@ async function create(params) {
     return basicDetails(application);
 }
 
-async function update(id, params) {
+async function update(id, params, ipAddress) {
     const application = await getApplication(id);
-
+    let account = {};
     if( params.status !== '' )
     {
         let message;
         let origin = "http://localhost:8100";
         if( params.status == 'Approved' ) 
         {
-            message = `<h4>Cogratulation !! Your application is Successful!</h4>
+            account = await db.Account.findOne({ email: application.email });
+            if( account.email ) {
+                await accountService.update( account.id, { supplier: application.id }, ipAddress);
+                message = `<h4>Congratulation !! Your application is Successful!</h4>
+                        <p>Please visit your Account to access your account new features .</p>`;
+            }
+            else 
+                message = `<h4>Congratulation !! Your application is Successful!</h4>
                         <p>Please visit the <a href="${origin}/create-tutor-profile/${application.id}">Registration</a> page complete your Tutor profile.</p>`;
         }
         else if( params.status == 'Declined' ) 
@@ -52,7 +60,7 @@ async function update(id, params) {
 
         /* await sendEmail({
             to: application.email,
-            subject: 'Tutor Application Response',
+            subject: 'Application Response',
             html: message
         }); */
     }
@@ -61,7 +69,7 @@ async function update(id, params) {
     application.updated = Date.now();
     await application.save();
 
-    return basicDetails(application);
+    return account;//basicDetails(account);
 }
 
 async function sendAlreadyRegisteredEmail(email, origin) {

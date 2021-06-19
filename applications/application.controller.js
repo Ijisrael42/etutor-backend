@@ -77,7 +77,7 @@ function update(req, res, next) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
  */
-    applicationService.update(req.params.id, req.body)
+    applicationService.update(req.params.id, req.body, req.ip)
         .then(application => res.json(application))
         .catch(next);
 }

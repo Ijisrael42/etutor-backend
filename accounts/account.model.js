@@ -7,6 +7,7 @@ const schema = new Schema({
     title: { type: String },
     name: { type: String, required: true },
     tutor_id: { type: Schema.Types.ObjectId, ref: 'Application' },
+    supplier: { type: Schema.Types.ObjectId, ref: 'Application' },
     firstName: { type: String },
     lastName: { type: String },
     device_token: { type: String },

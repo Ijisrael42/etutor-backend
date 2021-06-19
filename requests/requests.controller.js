@@ -11,6 +11,7 @@ const requestsService = require('./request.service');
 router.get('/', getAll);
 router.get('/:id', getById);
 router.get('/user/:id', getByUserId);
+router.get('/supplier/:id', getBySupplierId);
 router.post('/', create);
 router.put('/:id', update);
 router.delete('/:id', _delete);
@@ -35,6 +36,14 @@ function getByUserId(req, res, next) {
     // users can get their own request and admins can get any request
 
     requestsService.getByUserId(req.params.id)
+        .then(request => request ? res.json(request) : res.sendStatus(404))
+        .catch(next);
+}
+
+function getBySupplierId(req, res, next) {
+    // users can get their own request and admins can get any request
+
+    requestsService.getBySupplierId(req.params.id)
         .then(request => request ? res.json(request) : res.sendStatus(404))
         .catch(next);
 }
