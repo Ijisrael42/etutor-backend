@@ -5,6 +5,7 @@ const schema = new Schema({
     supplier_id: { type: Schema.Types.ObjectId, ref: 'Supplier' },
     supplier_name: { type: String },
     status: { type: String },
+    total: { type: Number },
     user_id: { type: Schema.Types.ObjectId, ref: 'Account' },
     created: { type: Date, default: Date.now },
     updated: Date

@@ -12,6 +12,7 @@ router.get('/', getAll);
 router.get('/:id', getById);
 router.get('/user/:id', getByUserId);
 router.get('/supplier/:id', getBySupplierId);
+router.get('/supplier/:id/:status', getBySupplierStatusId);
 router.post('/', create);
 router.put('/:id', update);
 router.delete('/:id', _delete);
@@ -44,6 +45,14 @@ function getBySupplierId(req, res, next) {
     // users can get their own request and admins can get any request
 
     requestsService.getBySupplierId(req.params.id)
+        .then(request => request ? res.json(request) : res.sendStatus(404))
+        .catch(next);
+}
+
+function getBySupplierStatusId(req, res, next) {
+    // users can get their own request and admins can get any request
+
+    requestsService.getBySupplierStatusId(req.params)
         .then(request => request ? res.json(request) : res.sendStatus(404))
         .catch(next);
 }

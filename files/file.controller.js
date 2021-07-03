@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const GridFsStorage = require("multer-gridfs-storage");
 const config = require('config.json');
-
+const sharp = require('sharp');
 
 // connection
 const conn = mongoose.createConnection(config.connectionString, {
@@ -75,6 +75,7 @@ router.post("/upload", upload.single("file"), fileUpload);
 router.get("/files", files);
 router.get("/files/:filename", fileByName);
 router.get("/image/:filename", download);
+router.get("/image/:filename/:width/:height", resizingImages);
 router.post("/files/del/:id", deleteFile);
 
 module.exports = router;
@@ -165,13 +166,42 @@ function download (req, res, next) {
     .find({
       filename: req.params.filename
     })
-    .toArray((err, files) => {
+    .toArray(async (err, files) => {
       if (!files || files.length === 0) {
         return res.status(404).json({
           err: "no files exist"
         });
       }
+      // const s = await sharp().resize(200, 250).webp();
+      // gfs.openDownloadStreamByName(req.params.filename).pipe(s).pipe(res);
       gfs.openDownloadStreamByName(req.params.filename).pipe(res);
+    });
+}
+
+function resizingImages (req, res, next) {
+  // console.log('id', req.params.id)
+  const file = gfs
+    .find({
+      filename: req.params.filename
+    })
+    .toArray(async (err, files) => {
+      if (!files || files.length === 0) {
+        return res.status(404).json({
+          err: "no files exist"
+        });
+      }
+      // gfs.openDownloadStreamByName(req.params.filename).pipe(res);
+      const { width, height } = req.params;
+
+      if( width !== '' || height !== '' )  {
+        let s;
+        if( width !== '' && height !== '' )  s = await sharp().resize(Number(width), Number(height)).webp();
+        else if( width !== '' )  s = await sharp().resize({ width: Number(width) }).webp();
+        else if( height !== '' ) s = await sharp().resize({ height: Number(width) }).webp();
+        gfs.openDownloadStreamByName(req.params.filename).pipe(s).pipe(res);
+      }
+      else gfs.openDownloadStreamByName(req.params.filename).pipe(res);
+
     });
 }
 
