@@ -32,6 +32,13 @@ async function create(params) {
 
     // save application
     await application.save();
+
+    if( params.email ) {
+        message = `<h4>Congratulation !! Your application has been received!</h4>
+                <p>The approval of your application will be sent through your .</p><br/><br/> 
+                <p>Kind regards.</p>`;
+        //await sendEmail({ to: params.email, subject: 'Application Submission', html: message });
+    }
     return basicDetails(application);
 }
 
@@ -44,7 +51,7 @@ async function update(id, params, ipAddress) {
         let origin = "http://localhost:8100";
         if( params.status == 'Approved' ) 
         {
-            account = await db.Account.findOne({ email: application.email });
+            account = {};//await db.Account.findOne({ email: application.email });
             if( account.email ) {
                 await accountService.update( account.id, { supplier: application.id }, ipAddress);
                 message = `<h4>Congratulation !! Your application is Successful!</h4>
@@ -52,17 +59,17 @@ async function update(id, params, ipAddress) {
             }
             else 
                 message = `<h4>Congratulation !! Your application is Successful!</h4>
-                        <p>Please visit the <a href="${origin}/create-tutor-profile/${application.id}">Registration</a> page complete your Tutor profile.</p>`;
+                        <p>Please visit the <a href="${origin}/create-profile/${application.id}">Registration</a> page complete your Registration Profile.</p>`;
         }
         else if( params.status == 'Declined' ) 
             message = `<h4>Your application has been Declined!</h4>
             <p>According to requirement, you do not qualify with us as Tutor</p><br/><br/><p>Thank you for submitting your application.</p>`;
 
-        /* await sendEmail({
+        await sendEmail({
             to: application.email,
             subject: 'Application Response',
             html: message
-        }); */
+        });
     }
     // copy params to application and save
     Object.assign(application, params);
@@ -105,6 +112,6 @@ async function getApplication(id) {
 }
 
 function basicDetails(application) {
-    const { id, name, email, description, category, status, experience, created } = application;
-    return { id, name, email, description, category, status, experience, created };
+    const { id, name, email, description, category, status, experience, documents, created } = application;
+    return { id, name, email, description, category, status, experience, documents, created };
 }

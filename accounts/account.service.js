@@ -206,7 +206,7 @@ async function googleSignUp(params, origin, ipAddress) {
 
 }
 
-async function registerTutor(params, origin) {
+async function registerTutor(params, origin, ipAddress) {
     // validate
     if (await db.Account.findOne({ email: params.email })) {
         // send already registered error in email to prevent account enumeration
@@ -225,8 +225,22 @@ async function registerTutor(params, origin) {
     // save account
     await account.save();
 
-    // send email
+    const jwtToken = generateJwtToken(account);
+    const refreshToken = generateRefreshToken(account, ipAddress);
+
+    // save refresh token
+    await refreshToken.save();
+
+    // return basic details and tokens
+    return {
+        ...basicDetails(account),
+        jwtToken,
+        refreshToken: refreshToken.token
+    };
+    
+/*     // send email
     await sendVerificationEmail(account, origin);
+ */
 }
 
 async function verifyEmail({ token }) {
@@ -237,7 +251,7 @@ async function verifyEmail({ token }) {
     account.verified = Date.now();
     account.verificationToken = undefined;
     await account.save();
-}
+} 
 
 async function forgotPassword({ email }, origin) {
     const account = await db.Account.findOne({ email });
@@ -417,8 +431,8 @@ function randomTokenString() {
 }
 
 function basicDetails(account) {
-    const { id, title, name, email, role, created, updated, isVerified, tutor_id, supplier, device_token } = account;
-    return { id, title, name, email, role, created, updated, isVerified, tutor_id,  supplier, device_token };
+    const { id, title, name, email, role, created, address, contact_no, profile_picture, updated, isVerified, tutor_id, supplier, device_token } = account;
+    return { id, title, name, email, role, created, address, contact_no, profile_picture, updated, isVerified, tutor_id,  supplier, device_token };
 }
 
 async function sendVerificationEmail(account, origin) {

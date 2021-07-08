@@ -137,16 +137,11 @@ function googleLogin(req, res, next) {
 function registerTutor(req, res, next) {
     const { email, password } = req.body;
     const body = req.body;
-    const ipAddress = req.ip;
     
-    accountService.registerTutor(req.body, req.get('origin'))
-    .then(() => {
-        return accountService.authenticate({ email, password, ipAddress })
-                .then(({ refreshToken, ...account }) => {
-                    setTokenCookie(res, refreshToken);
-                    res.json({ refreshToken, ...account, ...body });
-                })
-                .catch(next);
+    accountService.registerTutor(req.body, req.get('origin'), req.ip)
+    .then(({ refreshToken, ...account }) => { 
+        setTokenCookie(res, refreshToken);
+        res.json({ refreshToken, ...account, ...body });
     })
     .catch(next);
 }
@@ -265,6 +260,9 @@ function updateSchema(req, res, next) {
         firstName: Joi.string().empty(''),
         name: Joi.string().empty(''),
         lastName: Joi.string().empty(''),
+        contact_no: Joi.string().empty(''),
+        profile_picture: Joi.string().empty(''),
+        address: Joi.string().empty(''),
         email: Joi.string().email().empty(''),
         password: Joi.string().min(6).empty(''),
         confirmPassword: Joi.string().valid(Joi.ref('password')).empty(''),

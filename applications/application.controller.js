@@ -38,8 +38,10 @@ function createSchema(req, res, next) {
         name: Joi.string().required(),
         email: Joi.string().email().required(),
         description: Joi.string().required(),
-        category: Joi.array().items(Joi.number()).required(),
+        // category: Joi.array().items(Joi.number()).required(),
+        category: Joi.string().required(),
         status: Joi.string().required(),
+        documents: Joi.string().required(),
         experience: Joi.string().required(),
 
     });
