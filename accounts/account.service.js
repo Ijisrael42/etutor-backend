@@ -33,7 +33,8 @@ module.exports = {
 async function authenticate({ email, password, ipAddress }) {
     const account = await db.Account.findOne({ email });
 
-    if (!account || !account.isVerified || !bcrypt.compareSync(password, account.passwordHash)) {
+    if (!account ) throw 'User account does not exist';
+    if ( !account.isVerified || !bcrypt.compareSync(password, account.passwordHash)) {
         throw 'Email or password is incorrect';
     }
 
@@ -62,6 +63,7 @@ async function googleLogin(params, ipAddress) {
     const { email } = ticket.getPayload();    
 
     const account = await db.Account.findOne({ email });
+    if (!account ) throw 'User account does not exist';
 
     // authentication successful so generate jwt and refresh tokens
     const jwtToken = generateJwtToken(account);
@@ -463,13 +465,13 @@ async function sendAlreadyRegisteredEmail(email, origin) {
         message = `<p>If you don't know your password you can reset it via the <code>/account/forgot-password</code> api route.</p>`;
     }
 
-    await sendEmail({
+    /* await sendEmail({
         to: email,
         subject: 'Sign-up Verification API - Email Already Registered',
         html: `<h4>Email Already Registered</h4>
                <p>Your email <strong>${email}</strong> is already registered.</p>
                ${message}`
-    });
+    }); */
 }
 
 async function sendPasswordResetEmail(account, origin) {

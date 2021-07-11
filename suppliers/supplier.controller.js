@@ -10,9 +10,11 @@ const supplierService = require('./supplier.service');
 router.get('/', getAll);//, authorize(Role.Admin)
 router.get('/active', getAllActive);
 router.get('/:id' , getById);
+router.post('/params' , getByParams);
 router.get('/supplier/:id' , getBySupplierId);
 router.post('/', authorize(), createSchema, create);
-router.put('/:id', authorize(), update);
+router.put('/:id', update);
+// router.put('/:id', authorize(), update);
 router.delete('/:id', authorize(), _delete);
 
 module.exports = router;
@@ -52,12 +54,13 @@ function createSchema(req, res, next) {
     const schema = Joi.object({
         name: Joi.string().required(),
         email: Joi.string().email().required(),
-        idpassport_no: Joi.string().required(),
+        // idpassport_no: Joi.string().required(),
         contact_no: Joi.string().required(),
         address: Joi.string().required(),
         category: Joi.string().required(),
+        documents: Joi.string().required(),
         // category: Joi.array().items(Joi.number()).required(),
-        status: Joi.string().required(),
+        application_status: Joi.string().required(),
         experience: Joi.number().required(),    
     });
     validateRequest(req, next, schema);
@@ -65,6 +68,12 @@ function createSchema(req, res, next) {
 
 function create(req, res, next) {
     supplierService.create(req.body)
+        .then(supplier => res.json(supplier))
+        .catch(next);
+}
+
+function getByParams(req, res, next) {
+    supplierService.getByParams(req.body)
         .then(supplier => res.json(supplier))
         .catch(next);
 }

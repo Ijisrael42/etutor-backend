@@ -85,8 +85,8 @@ async function getRequest(id) {
 }
 
 function basicDetails(request) {
-    const { id, supplier_name, supplier_id, user_id, total, status, created } = request;
-    return { id, supplier_name, supplier_id, user_id, total, status, created };
+    const { id, supplier_name, supplier_id, supplier_comment, supplier_rating_customer, customer_comment, customer_rating_supplier, user_id, total, status, created } = request;
+    return { id, supplier_name, supplier_id, supplier_comment, supplier_rating_customer, customer_comment, customer_rating_supplier, user_id, total, status, created };
 }
 
 function basicItemDetails(request) {

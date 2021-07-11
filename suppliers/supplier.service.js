@@ -6,6 +6,7 @@ module.exports = {
     getAll,
     getAllActive,
     getById,
+    getByParams,
     getByUserId,
     getBySupplierId,
     create,
@@ -18,8 +19,15 @@ async function getAll() {
     return suppliers.map(x => basicDetails(x));
 }
 
+async function getByParams(params) {
+    const suppliers = await db.Supplier.find(params);
+    return suppliers.map(x => basicDetails(x));
+}
+
 async function getAllActive() {
-    const suppliers = await db.Supplier.find({ status: "Enabled"});
+    const suppliers = await db.Supplier.find({ account_status: "Active", status: "Online"});
+    // const suppliers = await db.Supplier.find({ status: "Enabled"});
+
     return suppliers.map(x => basicDetails(x));
 }
 
@@ -49,7 +57,37 @@ async function create(params) {
 async function update(id, params) {
     const supplier = await getApplication(id);
 
-    if( params.status !== '' )
+    if( params.application_status !== '' )
+    {
+        let message;
+        let origin = "http://localhost:8100";
+        if( params.application_status === 'Approved' ) 
+        {
+            account = {};//await db.Account.findOne({ email: supplier.email });
+            params.account_status = 'Active';
+            params.status = 'Offline';
+            if( account.email ) {
+                await accountService.update( account.id, { supplier: supplier.id }, ipAddress);
+                message = `<h4>Congratulation !! Your application is Successful!</h4>
+                        <p>Please visit your Account to access your account new features .</p>`;
+            }
+            else 
+                message = `<h4>Congratulation !! Your application is Successful!</h4>
+                        <p>Please visit the <a href="${origin}/create-profile/${supplier.id}">Registration</a> page complete your Registration Profile.</p>`;
+        }
+        else if( params.application_status === 'Declined' ) 
+            message = `<h4>Your application has been Declined!</h4>
+            <p>According to requirement, you do not qualify with us as Tutor</p><br/><br/><p>Thank you for submitting your application.</p>`;
+
+/*         await sendEmail({
+            to: supplier.email,
+            subject: 'Application Response',
+            html: message
+        });
+ */    
+    }
+
+    /* else if( params.status !== '' )
     {
         let message;
         let origin = "http://localhost:8100";
@@ -62,12 +100,12 @@ async function update(id, params) {
             message = `<h4>Your supplier has been Declined!</h4>
             <p>According to requirement, you do not qualify with us as Tutor</p><br/><br/><p>Thank you for submitting your supplier.</p>`;
 
-        /* await sendEmail({
+        / * await sendEmail({
             to: supplier.email,
             subject: 'Tutor Supplier Response',
             html: message
-        }); */
-    }
+        }); * /
+    } */
     // copy params to supplier and save
     Object.assign(supplier, params);
     supplier.updated = Date.now();
@@ -109,6 +147,6 @@ async function getApplication(id) {
 }
 
 function basicDetails(supplier) {
-    const { id, name, email, contact_no, idpassport_no, address, category, status, experience, created } = supplier;
-    return { id, name, email, contact_no, idpassport_no, address, category, status, experience, created };
+    const { id, name, email, contact_no, address, documents, application_status, category, account_status, status, experience, created } = supplier;
+    return { id, name, email, contact_no, address, category, application_status, documents, account_status, status, experience, created };
 }
