@@ -1,10 +1,12 @@
 ﻿const db = require('_helpers/db');
+const sendNotification = require('_helpers/send-notification');
 
 module.exports = {
     getAll,
     getByUserId,
     getBySupplierId,
     getBySupplierStatusId,
+    getByParams,
     getById,
     create,
     update,
@@ -42,10 +44,19 @@ async function getById(id) {
     return { ...basicDetails(request), products: items};
 }
 
+async function getByParams(params) {
+    const requests = await db.Request.find(params);
+    return requests.map(x => basicDetails(x));
+}
+
 async function create(params) {
 
     const request = new db.Request(params);
     let requestItem = {};
+    const msg = 'Service Request has been sent to you, please accept request from the Customer';
+    const title = 'Accept Service Request';
+    const account = await db.Account.find( {  supplier: request.supplier_id } );
+
     request.verified = Date.now();
 
     await request.save();
@@ -55,11 +66,37 @@ async function create(params) {
         requestItem.save();
     });
 
+
+    if( account.device_token != '' ) 
+        res = sendNotification(msg, title, account.device_token, account.id);
+    else {} // Send an email notifying the Tutor about the notification.
+
     return basicDetails(request);
 }
 
 async function update(id, params) {
     const request = await getRequest(id);
+
+    if( params.status !== '') {
+
+        let msg = '';
+        let title = '';
+        const account = await db.Account.find( {  supplier: request.supplier_id } );
+
+        if( params.status === 'Accepted') {
+            msg = 'Your Service Request has been Accepted!! Rate your Customer';
+            title = 'Service Request Accepted';
+        }
+        else if( params.status === 'Completed') {
+            msg = 'Your Service Request has been Completed!! Rate your Service Provider';
+            title = 'Service Request Completed';
+        }
+
+        if( account.device_token != '' ) 
+            res = sendNotification(msg, title, account.device_token, account.id);
+        else {} // Send an email notifying the Tutor about the notification.
+
+    }
 
     // copy params to request and save
     Object.assign(request, params);

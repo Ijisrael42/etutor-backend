@@ -13,6 +13,7 @@ router.get('/:id', getById);
 router.get('/user/:id', getByUserId);
 router.get('/supplier/:id', getBySupplierId);
 router.get('/supplier/:id/:status', getBySupplierStatusId);
+router.post('/params' , getByParams);
 router.post('/', create);
 router.put('/:id', update);
 router.delete('/:id', _delete);
@@ -54,6 +55,12 @@ function getBySupplierStatusId(req, res, next) {
 
     requestsService.getBySupplierStatusId(req.params)
         .then(request => request ? res.json(request) : res.sendStatus(404))
+        .catch(next);
+}
+
+function getByParams(req, res, next) {
+    requestsService.getByParams(req.body)
+        .then(request => res.json(request))
         .catch(next);
 }
 
