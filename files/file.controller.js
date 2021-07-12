@@ -174,7 +174,10 @@ function download (req, res, next) {
       }
       // const s = await sharp().resize(200, 250).webp();
       // gfs.openDownloadStreamByName(req.params.filename).pipe(s).pipe(res);
-      gfs.openDownloadStreamByName(req.params.filename).pipe(res);
+      gfs.openDownloadStreamByName(req.params.filename).pipe(res)
+      .on('error', function(error) { console.log(":::error"); /* assert.ifError(error); */ })
+      .on('finish', function() { /*console.log('done!');  process.exit(0); */ }); 
+
     });
 }
 
@@ -198,9 +201,14 @@ function resizingImages (req, res, next) {
         if( width !== '' && height !== '' )  s = await sharp().resize(Number(width), Number(height)).webp();
         else if( width !== '' )  s = await sharp().resize({ width: Number(width) }).webp();
         else if( height !== '' ) s = await sharp().resize({ height: Number(width) }).webp();
-        gfs.openDownloadStreamByName(req.params.filename).pipe(s).pipe(res);
+        gfs.openDownloadStreamByName(req.params.filename).pipe(s).pipe(res)
+        .on('error', function(error) { console.log(":::error"); /* assert.ifError(error); */ })
+        .on('finish', function() { /*console.log('done!');  process.exit(0); */ }); 
+
       }
-      else gfs.openDownloadStreamByName(req.params.filename).pipe(res);
+      else gfs.openDownloadStreamByName(req.params.filename).pipe(res)
+            .on('error', function(error) { console.log(":::error"); /* assert.ifError(error); */ })
+            .on('finish', function() { /*console.log('done!');  process.exit(0); */ }); 
 
     });
 }
