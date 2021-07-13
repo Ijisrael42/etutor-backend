@@ -1,5 +1,6 @@
 ﻿const db = require('_helpers/db');
 const sendNotification = require('_helpers/send-notification');
+const accountService = require('accounts/account.service');
 
 module.exports = {
     getAll,
@@ -81,10 +82,11 @@ async function update(id, params) {
 
         let msg = '';
         let title = '';
-        const account = await db.Account.find( {  supplier: request.supplier_id } );
+        // const account = accountService.getById(request.user_id);
+        const account = await db.Account.findById(request.user_id);
 
         if( params.status === 'Accepted') {
-            msg = 'Your Service Request has been Accepted!! Rate your Customer';
+            msg = 'Your Service Request has been Accepted!!';
             title = 'Service Request Accepted';
         }
         else if( params.status === 'Completed') {
@@ -92,8 +94,11 @@ async function update(id, params) {
             title = 'Service Request Completed';
         }
 
-        if( account.device_token != '' ) 
+        if( account.device_token ) {
+
             res = sendNotification(msg, title, account.device_token, account.id);
+            console.log("sent!!");
+        }
         else {} // Send an email notifying the Tutor about the notification.
 
     }
