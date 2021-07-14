@@ -9,17 +9,19 @@ admin.initializeApp({
 
 module.exports = sendNotification;
 
-async function sendNotification(msg, title, regIdArray, accountId) {
+async function sendNotification(msg, title, regIdArray, accountId, url) {
+    const clickAction =  url ? url : '/';
 
     const data = { 
-        "notification": { "body": msg, "title": title },
-        "data": { "body": msg, "title": title },
-        "token": regIdArray
+        // "notification": { "body": msg, "title": title },
+        "data": { "body": msg, "title": title, "click_action": clickAction },
+        "token": regIdArray,
     };
 
     const res = admin.messaging().send(data)
     .then((response) => {  return response; })
     .catch((err) => {
+        console.log(err)
         accountService.update(accountId, { device_token: "" });
         return err; 
     });

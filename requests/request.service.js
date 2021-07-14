@@ -96,8 +96,8 @@ async function update(id, params) {
 
         if( account.device_token ) {
 
-            res = sendNotification(msg, title, account.device_token, account.id);
-            console.log("sent!!");
+            res = sendNotification(msg, title, account.device_token, account.id, `/request/${id}`);
+            // console.log("sent!!");
         }
         else {} // Send an email notifying the Tutor about the notification.
 
