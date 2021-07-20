@@ -21,6 +21,7 @@ app.use('/token', require('./token/token.controller'));
 app.use('/applications', require('./applications/application.controller'));
 app.use('/services', require('./services/service.controller'));
 app.use('/suppliers', require('./suppliers/supplier.controller'));
+app.use('/tutors', require('./tutors/tutor.controller'));
 app.use('/products', require('./products/product.controller'));
 app.use('/files', require('./files/file.controller'));
 app.use('/requests', require('./requests/requests.controller'));

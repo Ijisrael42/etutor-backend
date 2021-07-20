@@ -18,6 +18,7 @@ module.exports = {
     Service: require('services/service.model'),
     Token: require('token/token.model'),
     Supplier: require('suppliers/supplier.model'),
+    Tutor: require('tutors/tutor.model'),
     Product: require('products/product.model'),
     Request: require('requests/request.model'),
     RequestItem: require('requests/request_item.model'),

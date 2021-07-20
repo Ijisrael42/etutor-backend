@@ -139,7 +139,8 @@ async function register(params, origin) {
     // validate
     if (await db.Account.findOne({ email: params.email })) {
         // send already registered error in email to prevent account enumeration
-        return await sendAlreadyRegisteredEmail(params.email, origin);
+        // await sendAlreadyRegisteredEmail(email, origin);
+        throw 'User account already exist';
     }
 
     // create account object
@@ -174,7 +175,8 @@ async function googleSignUp(params, origin, ipAddress) {
     // validate
     if (await db.Account.findOne({ email: email })) {
         // send already registered error in email to prevent account enumeration
-        return await sendAlreadyRegisteredEmail(email, origin);
+        await sendAlreadyRegisteredEmail(email, origin);
+        throw 'User account already exist';
     }
 
     // create account object
