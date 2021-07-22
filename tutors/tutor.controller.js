@@ -12,7 +12,7 @@ router.get('/active', getAllActive);
 router.get('/:id' , getById);
 router.post('/params' , getByParams);
 router.get('/tutor/:id' , getByTutorId);
-router.post('/', authorize(), createSchema, create);
+router.post('/', createSchema, create);
 router.put('/:id', update);
 // router.put('/:id', authorize(), update);
 router.delete('/:id', authorize(), _delete);
@@ -54,14 +54,12 @@ function createSchema(req, res, next) {
     const schema = Joi.object({
         name: Joi.string().required(),
         email: Joi.string().email().required(),
-        // idpassport_no: Joi.string().required(),
-        contact_no: Joi.string().required(),
-        address: Joi.string().required(),
+        experience: Joi.string().required(),
+        description: Joi.string().required(),
         category: Joi.string().required(),
         documents: Joi.string().required(),
-        // category: Joi.array().items(Joi.number()).required(),
         application_status: Joi.string().required(),
-        experience: Joi.number().required(),    
+        // experience: Joi.number().required(),    
     });
     validateRequest(req, next, schema);
 }

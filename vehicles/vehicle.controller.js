@@ -4,48 +4,46 @@ const Joi = require('joi');
 const validateRequest = require('_middleware/validate-request');
 const authorize = require('_middleware/authorize')
 const Role = require('_helpers/role');
-const supplierService = require('./supplier.service');
+const vehicleService = require('./vehicle.service');
 
 // routes
 router.get('/', getAll);//, authorize(Role.Admin)
-router.get('/active', getAllActive);
 router.get('/:id' , getById);
-router.post('/params' , getByParams);
 router.get('/supplier/:id' , getBySupplierId);
-router.post('/', createSchema, create);
-router.put('/:id', update);
-// router.put('/:id', authorize(), update);
-router.delete('/:id', authorize(), _delete);
+router.get('/supplier/active/:id' , getAllActiveSupplierId);
+router.post('/', authorize(), createSchema, create);
+router.put('/:id',  update);
+router.delete('/:id',  _delete);
 
 module.exports = router;
 
 function getAll(req, res, next) {
-    supplierService.getAll()
-        .then(suppliers => res.json(suppliers))
+    vehicleService.getAll()
+        .then(vehicles => res.json(vehicles))
         .catch(next);
 }
 
-function getAllActive(req, res, next) {
-    supplierService.getAllActive()
-        .then(suppliers => res.json(suppliers))
+function getAllActiveSupplierId(req, res, next) {
+    vehicleService.getAllActiveSupplierId(req.params.id)
+        .then(services => res.json(services))
         .catch(next);
 }
 
 function getById(req, res, next) {
-    // users can get their own supplier and admins can get any supplier
+    // users can get their own vehicle and admins can get any vehicle
 /*     if (req.params.user_id !== req.user.id ) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
- */    supplierService.getById(req.params.id)
-        .then(supplier => supplier ? res.json(supplier) : res.sendStatus(404))
+ */    vehicleService.getById(req.params.id)
+        .then(vehicle => vehicle ? res.json(vehicle) : res.sendStatus(404))
         .catch(next);
 }
 
 function getBySupplierId(req, res, next) {
- 
-    supplierService.getBySupplierId(req.params.id)
-        .then(supplier => supplier ? res.json(supplier) : res.sendStatus(404))
+
+    vehicleService.getBySupplierId(req.params.id)
+        .then(vehicle => vehicle ? res.json(vehicle) : res.sendStatus(404))
         .catch(next);
 }
 
@@ -53,28 +51,21 @@ function createSchema(req, res, next) {
 
     const schema = Joi.object({
         name: Joi.string().required(),
-        email: Joi.string().email().required(),
-        // idpassport_no: Joi.string().required(),
+        supplier: Joi.string().required(),
         contact_no: Joi.string().required(),
-        address: Joi.string().required(),
-        category: Joi.string().required(),
+        car_model: Joi.string().required(),
+        car_color: Joi.string().required(),
+        no_plate: Joi.string().required(),
         documents: Joi.string().required(),
-        // category: Joi.array().items(Joi.number()).required(),
-        application_status: Joi.string().required(),
-        experience: Joi.number().required(),    
+        profile_picture: Joi.string().required(),
+        status: Joi.string().required()
     });
     validateRequest(req, next, schema);
 }
 
 function create(req, res, next) {
-    supplierService.create(req.body)
-        .then(supplier => res.json(supplier))
-        .catch(next);
-}
-
-function getByParams(req, res, next) {
-    supplierService.getByParams(req.body)
-        .then(supplier => res.json(supplier))
+    vehicleService.create(req.body)
+        .then(vehicle => res.json(vehicle))
         .catch(next);
 }
 
@@ -98,23 +89,23 @@ function getByParams(req, res, next) {
 } */
 
 function update(req, res, next) {
-    // users can update their own supplier and admins can update any supplier
+    // users can update their own vehicle and admins can update any vehicle
 /*     if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
  */
-    supplierService.update(req.params.id, req.body)
-        .then(supplier => res.json(supplier))
+    vehicleService.update(req.params.id, req.body)
+        .then(vehicle => res.json(vehicle))
         .catch(next);
 }
 
 function _delete(req, res, next) {
-    // users can delete their own supplier and admins can delete any supplier
-    if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
+    // users can delete their own vehicle and admins can delete any vehicle
+/*     if (req.params.id !== req.user.id && req.user.role !== Role.Admin) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
-
-    supplierService.delete(req.params.id)
+ */
+    vehicleService.delete(req.params.id)
         .then(() => res.json({ message: 'Account deleted successfully' }))
         .catch(next);
 }

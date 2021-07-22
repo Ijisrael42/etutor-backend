@@ -218,7 +218,31 @@ function generateZoomJWT() {
 
 async function create(params) {
     const question = new db.Question(params);
-    sendToTutors();
+
+    /* let msg = '';
+    let title = '';
+    // const account = accountService.getById(request.user_id);
+    let tutors =  await db.Tutor.find({ category: params.category });
+    tutors = tutors.map( tutor => (tutor.id) );
+
+    const accounts = await db.Account.find({ $in : {tutor_id: tutors} });
+
+    if( params.status === 'Accepted') {
+        msg = 'Your Service Request has been Accepted!!';
+        title = 'Service Request Accepted';
+    }
+    else if( params.status === 'Completed') {
+        msg = 'Your Service Request has been Completed!! Rate your Service Provider';
+        title = 'Service Request Completed';
+    }
+
+    if( account.device_token ) {
+
+        res = sendNotification(msg, title, account.device_token, account.id, `/request/${id}`);
+        // console.log("sent!!");
+    }
+    else {} // Send an email notifying the Tutor about the notification.
+ */
     // save question
     await question.save();
     return basicDetails(question);

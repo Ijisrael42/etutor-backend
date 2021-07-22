@@ -6,6 +6,7 @@ const schema = new Schema({
     supplier_name: { type: String },
     status: { type: String },
     supplier_comment: { type: String },
+    vehicle: { type: String },
     supplier_rating_customer: { type: Number },
     customer_comment: { type: String },
     customer_rating_supplier: { type: Number },

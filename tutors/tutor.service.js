@@ -147,6 +147,6 @@ async function getApplication(id) {
 }
 
 function basicDetails(tutor) {
-    const { id, name, email, contact_no, address, documents, application_status, category, account_status, status, experience, created } = tutor;
-    return { id, name, email, contact_no, address, category, application_status, documents, account_status, status, experience, created };
+    const { id, name, email, description, category, application_status, documents, account_status, status, experience, created } = tutor;
+    return { id, name, email, description, category, application_status, documents, account_status, status, experience, created };
 }
