@@ -9,6 +9,7 @@ const schema = new Schema({
     category: { type: String, required: true },
     // category: { type: Array, required: true },
     status: { type: String },
+    credit: { type: Number },
     account_status: { type: String },
     application_status: { type: String },
     address: { type: String },

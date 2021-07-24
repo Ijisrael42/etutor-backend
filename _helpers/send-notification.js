@@ -23,7 +23,7 @@ async function sendNotification(msg, title, regIdArray, accountId, url) {
     .catch((err) => {
         console.log(err)
         accountService.update(accountId, { device_token: "" });
-        return err; 
+        // return err; 
     });
 
     return res;

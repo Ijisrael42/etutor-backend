@@ -60,6 +60,6 @@ async function getService(id) {
 }
 
 function basicDetails(service) {
-    const { id, name, status } = service;
-    return { id, name, status };
+    const { id, name, status, category } = service;
+    return { id, name, status, category };
 }

@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema({
     request_id: { type: Schema.Types.ObjectId, ref: 'Request' },
-    product_id: { type: Schema.Types.ObjectId, ref: 'Product' },
+    product_id: { type: String },
     product_name: { type: String },
     price: { type: Number },
     quantity: { type: Number },

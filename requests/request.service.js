@@ -97,7 +97,7 @@ async function update(id, params) {
         if( account.device_token ) {
 
             res = sendNotification(msg, title, account.device_token, account.id, `/request/${id}`);
-            // console.log("sent!!");
+            // console.log("sent!!", account.device_token);
         }
         else {} // Send an email notifying the Tutor about the notification.
 
@@ -127,8 +127,8 @@ async function getRequest(id) {
 }
 
 function basicDetails(request) {
-    const { id, supplier_name, supplier_id, supplier_comment, supplier_rating_customer, customer_comment, customer_rating_supplier, user_id, total, status, created } = request;
-    return { id, supplier_name, supplier_id, supplier_comment, supplier_rating_customer, customer_comment, customer_rating_supplier, user_id, total, status, created };
+    const { id, supplier_name, supplier_id, supplier_comment, supplier_rating_customer, customer_comment, customer_rating_supplier, user_id, total, status, vehicle, created } = request;
+    return { id, supplier_name, supplier_id, supplier_comment, supplier_rating_customer, customer_comment, customer_rating_supplier, user_id, total, status, vehicle, created };
 }
 
 function basicItemDetails(request) {
