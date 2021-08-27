@@ -92,8 +92,9 @@ async function getByTutorIdUnbidded(id) {
     return questions; //basicDetails(question);
 }
 
-async function getByCategory(category) {
-    const questions = await db.Question.find( { category: { $in: category } } );
+async function getByCategory(params) {
+    const questions = await db.Question.find({ category: params.category });
+    // const questions = await db.Question.find( { category: { $in: category } } );
     return questions; //basicDetails(question);
 }
 

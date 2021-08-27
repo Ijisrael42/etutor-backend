@@ -13,7 +13,7 @@ async function sendNotification(msg, title, regIdArray, accountId, url) {
     const clickAction =  url ? url : '/';
 
     const data = { 
-        // "notification": { "body": msg, "title": title },
+        "notification": { "body": msg, "title": title },
         "data": { "body": msg, "title": title, "click_action": clickAction },
         "token": regIdArray,
     };

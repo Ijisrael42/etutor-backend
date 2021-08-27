@@ -11,7 +11,7 @@ const schema = new Schema({
     image_url: { type: String },
     date_time: { type: String },
     no_of_hours: { type: Number },
-    category: { type: Number },
+    category: { type: String },
     status: { type: String },
     budget: { type: Number },    
     created: { type: Date, default: Date.now },

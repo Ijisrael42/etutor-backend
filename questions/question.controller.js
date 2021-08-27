@@ -186,7 +186,7 @@ function createSchema(req, res, next) {
         title: Joi.string().required(),
         description: Joi.string().required(),
         user_id: Joi.required(),
-        category: Joi.number().required(),
+        category: Joi.string().required(),
         status: Joi.string().required(),
         budget: Joi.number().required(),
         date_time: Joi.string().required(),
