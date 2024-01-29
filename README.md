@@ -41,7 +41,7 @@ cd E-tutor-backend_server
 npm install
 ```
 
-3. Create an .e google service_account file
+3. Create a google service_account.json file and place it at the root folder.
 
 Add Variables:
 
@@ -63,3 +63,5 @@ npm start or node ./server.js
 ```shell
 npm run dev or nodemon ./server.js
 ```
+
+Used this boiler templates: https://jasonwatmore.com/post/2020/05/13/node-mongo-api-with-email-sign-up-verification-authentication-forgot-password
